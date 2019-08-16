@@ -1,0 +1,4 @@
+coredns_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/coredns:1.5.0"
+nginx_ingress_controller_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/kubernetes-ingress-controller/nginx-ingress-controller:0.25.0"
+default_http_backend_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/defaultbackend-amd64:1.5"
+CLUSTER_DNS_SVC_IP: "{{ SERVICE_CIDR | ipaddr('net') | ipaddr(2) | ipaddr('address') }}"

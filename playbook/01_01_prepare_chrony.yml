@@ -1,0 +1,10 @@
+# Synchronization time via chrony, note that if the time is not synchronized, the certificate will be invalid
+- hosts:
+    - kube_master
+    - kube_node
+    - etcd
+    - chrony
+    - nexus
+    - admin
+  roles:
+    - { role: chrony, when: "groups['chrony']|length > 0" }

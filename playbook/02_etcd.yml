@@ -1,0 +1,7 @@
+# Install etcd (support cluster or single node depends on the etcd hosts number)
+- hosts: etcd
+  roles:
+  - docker
+  - kubelet
+  - etcd
+

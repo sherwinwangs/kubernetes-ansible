@@ -1,0 +1,21 @@
+- name: Uninstall NTP
+  package: name=ntp state=absent
+
+- name: Install chrony
+  package: name=chrony state=present
+
+- block:
+  - name: Config chrony server 
+    template: src=chrony-server.conf.j2 dest=/etc/chrony.conf
+
+  - name: Start and enable chrony server
+    service: name=chronyd state=restarted enabled=yes
+  when: 'inventory_hostname == groups.chrony[0]'
+
+- block:
+  - name: Config chrony server
+    template: src=chrony-server.conf.j2 dest=/etc/chrony.conf
+
+  - name: Start and enable chrony server
+    service: name=chronyd state=restarted enabled=yes
+  when: 'inventory_hostname != groups.chrony[0]'

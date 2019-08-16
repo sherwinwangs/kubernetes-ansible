@@ -1,0 +1,57 @@
+# 禁用系统swap
+- name: Disable swap for OS
+  shell: "swapoff -a && sysctl -w vm.swappiness=0"
+  ignore_errors: true
+
+- name: Remove swap config from /etc/fstab
+  lineinfile:
+    path: /etc/fstab
+    regexp: 'swap'
+    state: absent
+    backup: 'yes'
+
+- name: Load kernel module for ipvs
+  modprobe: name={{ item }} state=present
+  with_items:
+    - br_netfilter
+    - ip_vs
+    - ip_vs_rr
+    - ip_vs_wrr
+    - ip_vs_sh
+  ignore_errors: true
+
+- name: Convert kernel version to float
+  set_fact:
+    KERNEL_VERSION: "{{ ansible_kernel.split('-')[0].split('.')[0]|int + ansible_kernel.split('-')[0].split('.')[1]|int/100 }}"
+
+- name: Load kernel module: nf_conntrack
+  modprobe: name=nf_conntrack state=present
+  when: "KERNEL_VERSION|float >= 4.19"
+  ignore_errors: true
+
+- name: Load kernel module: nf_conntrack_ipv4
+  modprobe: name=nf_conntrack_ipv4 state=present
+  when: "KERNEL_VERSION|float < 4.19"
+  ignore_errors: true
+
+- name: Enable systemd auto load module service
+  service: name=systemd-modules-load enabled=yes
+
+- name: Eanble kernel modules on boot
+  template: src=10-k8s-modules.conf.j2 dest=/etc/modules-load.d/10-k8s-modules.conf
+
+- name: Setting parameters for OS
+  template: src=95-k8s-sysctl.conf.j2 dest=/etc/sysctl.d/95-k8s-sysctl.conf
+
+- name: Make the OS parameters effective
+  shell: "sysctl -p /etc/sysctl.d/95-k8s-sysctl.conf"
+  ignore_errors: true
+
+- name: Create directory for systemd configuration file
+  file: name=/etc/systemd/system.conf.d state=directory
+
+- name: Setting ulimit for OS
+  template: src=30-k8s-ulimits.conf.j2 dest=/etc/systemd/system.conf.d/30-k8s-ulimits.conf
+
+- name: Put SCTP to kernel blacklist
+  copy: src=sctp.conf dest=/etc/modprobe.d/sctp.conf

@@ -1,0 +1,8 @@
+# Install services on kubenetes master
+- hosts:
+  - kube_master
+  roles:
+  - { role: kubelet, when: "inventory_hostname not in groups['etcd']" }
+  - { role: kube_master, when: "inventory_hostname in groups['kube_master']" }
+  - { role: kube_proxy, when: "inventory_hostname  in groups['kube_master']" }
+

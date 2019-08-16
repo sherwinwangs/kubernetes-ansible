@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    component: etcd
+    tier: control-plane
+  name: etcd
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - etcd
+    - --name={{ NODE_NAME }}
+    - --advertise-client-urls=https://{{ inventory_hostname }}:2379
+    - --cert-file={{ ca_dir }}/etcd/etcd-server.pem
+    - --key-file={{ ca_dir }}/etcd/etcd-server-key.pem
+    - --trusted-ca-file={{ ca_dir }}/ca.pem
+    - --client-cert-auth=true
+    - --initial-advertise-peer-urls=https://{{ inventory_hostname }}:2380
+    - --initial-cluster={{ ETCD_NODES }}
+    - --listen-client-urls=https://{{ inventory_hostname }}:2379,https://127.0.0.1:2379
+    - --listen-peer-urls=https://{{ inventory_hostname }}:2380
+    - --peer-cert-file={{ ca_dir }}/etcd/etcd-peer.pem
+    - --peer-key-file={{ ca_dir }}/etcd/etcd-peer-key.pem
+    - --peer-trusted-ca-file={{ ca_dir }}/ca.pem
+    - --peer-client-cert-auth=true
+    - --data-dir=/var/lib/etcd
+    - --snapshot-count=10000
+    image: {{ etcd_image }}
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      exec:
+        command:
+        - /bin/sh
+        - -ec
+        - ETCDCTL_API=3 etcdctl --endpoints=https://[127.0.0.1]:2379 --cacert={{ ca_dir }}/ca.pem
+          --cert={{ ca_dir }}/etcd/etcd-client.pem --key={{ ca_dir }}/etcd/etcd-client-key.pem
+          get foo
+      failureThreshold: 8
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: etcd
+    resources: {}
+    volumeMounts:
+    - mountPath: /var/lib/etcd
+      name: etcd-data
+    - mountPath: /etc/kubernetes/pki
+      name: etcd-certs
+  hostNetwork: true
+  priorityClassName: system-cluster-critical
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/pki
+      type: DirectoryOrCreate
+    name: etcd-certs
+  - hostPath:
+      path: /var/lib/etcd
+      type: DirectoryOrCreate
+    name: etcd-data
+status: {}

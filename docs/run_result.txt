@@ -1,0 +1,818 @@
+[root@admin kubernetes-ansible]# ansible-playbook  -i inventory/k8s.dev 01_01_prepare_chrony.yml
+
+PLAY [kube_master,kube_node,etcd,chrony,nexus,admin] ******************************************************************************************************************************************
+
+TASK [Gathering Facts] ************************************************************************************************************************************************************************
+ok: [192.168.2.10]
+ok: [192.168.2.200]
+ok: [192.168.2.12]
+ok: [192.168.2.11]
+ok: [192.168.2.13]
+
+TASK [chrony : 卸载 ntp] ************************************************************************************************************************************************************************
+ok: [192.168.2.200]
+ok: [192.168.2.10]
+ok: [192.168.2.13]
+ok: [192.168.2.12]
+ok: [192.168.2.11]
+
+TASK [chrony : 安装 chrony] *********************************************************************************************************************************************************************
+ok: [192.168.2.10]
+ok: [192.168.2.200]
+changed: [192.168.2.13]
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+
+TASK [chrony : 配置 chrony server] **************************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [chrony : 启动 chrony server] **************************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [chrony : 配置 chrony client] **************************************************************************************************************************************************************
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+ok: [192.168.2.10]
+ok: [192.168.2.200]
+
+TASK [chrony : 启动 chrony client] **************************************************************************************************************************************************************
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+changed: [192.168.2.10]
+changed: [192.168.2.200]
+
+PLAY RECAP ************************************************************************************************************************************************************************************
+192.168.2.10               : ok=5    changed=1    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+192.168.2.11               : ok=5    changed=3    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+192.168.2.12               : ok=5    changed=3    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+192.168.2.13               : ok=5    changed=3    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+192.168.2.200              : ok=5    changed=1    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0
+
+[root@admin kubernetes-ansible]# ansible-playbook  -i inventory/k8s.dev 99_install.yaml
+
+PLAY [kube_master,kube_node,etcd,chrony,nexus,admin] ******************************************************************************************************************************************
+
+TASK [Gathering Facts] ************************************************************************************************************************************************************************
+ok: [192.168.2.11]
+ok: [192.168.2.12]
+ok: [192.168.2.10]
+ok: [192.168.2.200]
+ok: [192.168.2.13]
+
+TASK [chrony : 卸载 ntp] ************************************************************************************************************************************************************************
+ok: [192.168.2.13]
+ok: [192.168.2.11]
+ok: [192.168.2.12]
+ok: [192.168.2.10]
+ok: [192.168.2.200]
+
+TASK [chrony : 安装 chrony] *********************************************************************************************************************************************************************
+ok: [192.168.2.13]
+ok: [192.168.2.11]
+ok: [192.168.2.12]
+ok: [192.168.2.200]
+ok: [192.168.2.10]
+
+TASK [chrony : 配置 chrony server] **************************************************************************************************************************************************************
+ok: [192.168.2.11]
+
+TASK [chrony : 启动 chrony server] **************************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [chrony : 配置 chrony client] **************************************************************************************************************************************************************
+ok: [192.168.2.12]
+ok: [192.168.2.13]
+ok: [192.168.2.10]
+ok: [192.168.2.200]
+
+TASK [chrony : 启动 chrony client] **************************************************************************************************************************************************************
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+changed: [192.168.2.200]
+changed: [192.168.2.10]
+
+PLAY [localhost] ******************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] ************************************************************************************************************************************************************************
+ok: [localhost]
+
+TASK [certificates : 创建证书存放的目录] ***************************************************************************************************************************************************************
+changed: [localhost] => (item=/opt/kubernetes-ansible/.cluster/ssl/etcd)
+
+TASK [certificates : 本地设置 bin 目录权限] ***********************************************************************************************************************************************************
+ok: [localhost]
+
+TASK [certificates : 读取ca证书stat信息] ************************************************************************************************************************************************************
+ok: [localhost]
+
+TASK [certificates : 准备 CA 配置文件和证书签名请求] *******************************************************************************************************************************************************
+changed: [localhost] => (item=ca-config.json)
+changed: [localhost] => (item=ca-csr.json)
+
+TASK [certificates : 创建 CA 证书和私钥] *************************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [certificates : 删除原有kubeconfig] **********************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [certificates : 准备 kubectl 使用的 admin 证书签名请求] *********************************************************************************************************************************************
+changed: [localhost]
+
+TASK [certificates : 创建 admin 证书与私钥] **********************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [certificates : 设置集群参数] ******************************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [certificates : 设置客户端认证参数] ***************************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [certificates : 设置上下文参数] *****************************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [certificates : 选择默认上下文] *****************************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [certificates : 准备 etcd 证书签名请求] **********************************************************************************************************************************************************
+changed: [localhost] => (item=etcd-server-csr.json)
+changed: [localhost] => (item=etcd-client-csr.json)
+changed: [localhost] => (item=etcd-peer-csr.json)
+
+TASK [certificates : 创建 etcd 证书和私钥] ***********************************************************************************************************************************************************
+changed: [localhost] => (item=etcd-server)
+changed: [localhost] => (item=etcd-client)
+changed: [localhost] => (item=etcd-peer)
+
+TASK [certificates : 准备 kube-proxy 证书签名请求] ****************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [certificates : 创建 kube-proxy 证书和私钥] *****************************************************************************************************************************************************
+changed: [localhost]
+
+PLAY [kube_master,kube_node,etcd,nexus,admin] *************************************************************************************************************************************************
+
+TASK [prepare : 删除操作系统中不需要的软件包] ***************************************************************************************************************************************************************
+ok: [192.168.2.10]
+ok: [192.168.2.200]
+changed: [192.168.2.11]
+changed: [192.168.2.13]
+changed: [192.168.2.12]
+
+TASK [prepare : 添加EPEL仓库] *********************************************************************************************************************************************************************
+ok: [192.168.2.10]
+ok: [192.168.2.200]
+changed: [192.168.2.13]
+changed: [192.168.2.12]
+changed: [192.168.2.11]
+
+TASK [prepare : 安装操作系统基础软件包] ******************************************************************************************************************************************************************
+ok: [192.168.2.10]
+ok: [192.168.2.200]
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [prepare : 安装ansible使用的python模块] *********************************************************************************************************************************************************
+ok: [192.168.2.10]
+ok: [192.168.2.200]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+changed: [192.168.2.11]
+
+TASK [prepare : 禁用系统 swap] ********************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [prepare : 删除fstab swap 相关配置] ************************************************************************************************************************************************************
+ok: [192.168.2.11]
+ok: [192.168.2.13]
+ok: [192.168.2.12]
+
+TASK [prepare : 加载内核模块] ***********************************************************************************************************************************************************************
+changed: [192.168.2.12] => (item=br_netfilter)
+changed: [192.168.2.13] => (item=br_netfilter)
+changed: [192.168.2.11] => (item=br_netfilter)
+changed: [192.168.2.12] => (item=ip_vs)
+changed: [192.168.2.13] => (item=ip_vs)
+changed: [192.168.2.11] => (item=ip_vs)
+changed: [192.168.2.13] => (item=ip_vs_rr)
+changed: [192.168.2.12] => (item=ip_vs_rr)
+changed: [192.168.2.11] => (item=ip_vs_rr)
+changed: [192.168.2.12] => (item=ip_vs_wrr)
+changed: [192.168.2.11] => (item=ip_vs_wrr)
+changed: [192.168.2.13] => (item=ip_vs_wrr)
+changed: [192.168.2.11] => (item=ip_vs_sh)
+changed: [192.168.2.12] => (item=ip_vs_sh)
+changed: [192.168.2.13] => (item=ip_vs_sh)
+
+TASK [prepare : 转换内核版本为浮点数] *******************************************************************************************************************************************************************
+ok: [192.168.2.11]
+ok: [192.168.2.12]
+ok: [192.168.2.13]
+
+TASK [prepare : 加载内核模块 nf_conntrack_ipv4] *****************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [prepare : 启用systemd自动加载模块服务] ************************************************************************************************************************************************************
+ok: [192.168.2.11]
+ok: [192.168.2.12]
+ok: [192.168.2.13]
+
+TASK [prepare : 增加内核模块开机加载配置] *****************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [prepare : 设置系统参数] ***********************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [prepare : 生效系统参数] ***********************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [prepare : 创建 systemd 配置目录] **************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [prepare : 设置系统 ulimits] *****************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.13]
+changed: [192.168.2.12]
+
+TASK [prepare : 把SCTP列入内核模块黑名单] ***************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.13]
+changed: [192.168.2.12]
+
+TASK [prepare : prepare some dirs] ************************************************************************************************************************************************************
+ok: [192.168.2.11] => (item=/usr/bin)
+ok: [192.168.2.12] => (item=/usr/bin)
+ok: [192.168.2.13] => (item=/usr/bin)
+changed: [192.168.2.11] => (item=/etc/kubernetes/pki/etcd)
+changed: [192.168.2.12] => (item=/etc/kubernetes/pki/etcd)
+changed: [192.168.2.13] => (item=/etc/kubernetes/pki/etcd)
+changed: [192.168.2.11] => (item=/root/.kube)
+changed: [192.168.2.12] => (item=/root/.kube)
+changed: [192.168.2.13] => (item=/root/.kube)
+changed: [192.168.2.11] => (item=/etc/kubernetes/manifests)
+changed: [192.168.2.12] => (item=/etc/kubernetes/manifests)
+changed: [192.168.2.13] => (item=/etc/kubernetes/manifests)
+
+TASK [prepare : 分发证书工具 CFSSL] *****************************************************************************************************************************************************************
+changed: [192.168.2.11] => (item=cfssl)
+changed: [192.168.2.13] => (item=cfssl)
+changed: [192.168.2.12] => (item=cfssl)
+changed: [192.168.2.11] => (item=cfssljson)
+changed: [192.168.2.13] => (item=cfssljson)
+changed: [192.168.2.12] => (item=cfssljson)
+
+TASK [prepare : 分发证书相关] ***********************************************************************************************************************************************************************
+changed: [192.168.2.11] => (item=ca.pem)
+changed: [192.168.2.12] => (item=ca.pem)
+changed: [192.168.2.13] => (item=ca.pem)
+changed: [192.168.2.11] => (item=ca-key.pem)
+changed: [192.168.2.12] => (item=ca-key.pem)
+changed: [192.168.2.13] => (item=ca-key.pem)
+changed: [192.168.2.11] => (item=ca-config.json)
+changed: [192.168.2.12] => (item=ca-config.json)
+changed: [192.168.2.13] => (item=ca-config.json)
+changed: [192.168.2.11] => (item=admin.pem)
+changed: [192.168.2.12] => (item=admin.pem)
+changed: [192.168.2.13] => (item=admin.pem)
+changed: [192.168.2.11] => (item=admin-key.pem)
+changed: [192.168.2.12] => (item=admin-key.pem)
+changed: [192.168.2.13] => (item=admin-key.pem)
+changed: [192.168.2.12] => (item=kube-proxy.pem)
+changed: [192.168.2.11] => (item=kube-proxy.pem)
+changed: [192.168.2.13] => (item=kube-proxy.pem)
+changed: [192.168.2.11] => (item=kube-proxy-key.pem)
+changed: [192.168.2.12] => (item=kube-proxy-key.pem)
+changed: [192.168.2.13] => (item=kube-proxy-key.pem)
+changed: [192.168.2.11] => (item=etcd/etcd-server.pem)
+changed: [192.168.2.12] => (item=etcd/etcd-server.pem)
+changed: [192.168.2.13] => (item=etcd/etcd-server.pem)
+changed: [192.168.2.11] => (item=etcd/etcd-server-key.pem)
+changed: [192.168.2.13] => (item=etcd/etcd-server-key.pem)
+changed: [192.168.2.12] => (item=etcd/etcd-server-key.pem)
+changed: [192.168.2.11] => (item=etcd/etcd-client.pem)
+changed: [192.168.2.13] => (item=etcd/etcd-client.pem)
+changed: [192.168.2.12] => (item=etcd/etcd-client.pem)
+changed: [192.168.2.11] => (item=etcd/etcd-client-key.pem)
+changed: [192.168.2.13] => (item=etcd/etcd-client-key.pem)
+changed: [192.168.2.12] => (item=etcd/etcd-client-key.pem)
+changed: [192.168.2.11] => (item=etcd/etcd-peer.pem)
+changed: [192.168.2.12] => (item=etcd/etcd-peer.pem)
+changed: [192.168.2.13] => (item=etcd/etcd-peer.pem)
+changed: [192.168.2.11] => (item=etcd/etcd-peer-key.pem)
+changed: [192.168.2.12] => (item=etcd/etcd-peer-key.pem)
+changed: [192.168.2.13] => (item=etcd/etcd-peer-key.pem)
+
+TASK [prepare : 分发 kubeconfig 配置文件] ***********************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+PLAY [nexus] **********************************************************************************************************************************************************************************
+
+TASK [docker : 准备docker相关目录] ******************************************************************************************************************************************************************
+ok: [192.168.2.200] => (item=/usr/bin)
+changed: [192.168.2.200] => (item=/etc/docker)
+
+TASK [docker : 下载 docker 二进制文件(>= 18.09.x)] ***************************************************************************************************************************************************
+ok: [192.168.2.200] => (item=containerd)
+ok: [192.168.2.200] => (item=containerd-shim)
+ok: [192.168.2.200] => (item=docker-init)
+ok: [192.168.2.200] => (item=runc)
+ok: [192.168.2.200] => (item=docker)
+ok: [192.168.2.200] => (item=ctr)
+ok: [192.168.2.200] => (item=dockerd)
+ok: [192.168.2.200] => (item=docker-proxy)
+
+TASK [docker : docker国内镜像加速] ******************************************************************************************************************************************************************
+changed: [192.168.2.200]
+
+TASK [docker : flush-iptables] ****************************************************************************************************************************************************************
+changed: [192.168.2.200]
+
+TASK [docker : 创建docker的systemd unit文件] *******************************************************************************************************************************************************
+ok: [192.168.2.200]
+
+TASK [docker : 开机启用docker 服务] *****************************************************************************************************************************************************************
+changed: [192.168.2.200]
+
+TASK [docker : 开启docker 服务] *******************************************************************************************************************************************************************
+changed: [192.168.2.200]
+
+TASK [docker : 轮询等待 docker 启动完成] **************************************************************************************************************************************************************
+changed: [192.168.2.200]
+
+TASK [nexus3 : 创建 nexus 数据相关目录] ***************************************************************************************************************************************************************
+changed: [192.168.2.200] => (item=/data/nexus/script)
+
+TASK [nexus3 : 判断 是否已经安装 nexus] ***************************************************************************************************************************************************************
+ok: [192.168.2.200]
+
+TASK [nexus3 : 创建 nexus 容器] *******************************************************************************************************************************************************************
+changed: [192.168.2.200]
+FAILED - RETRYING: 获取 nexus 的初始密码 (30 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (29 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (28 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (27 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (26 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (25 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (24 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (23 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (22 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (21 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (20 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (19 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (18 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (17 retries left).
+FAILED - RETRYING: 获取 nexus 的初始密码 (16 retries left).
+
+TASK [nexus3 : 获取 nexus 的初始密码] ****************************************************************************************************************************************************************
+changed: [192.168.2.200]
+
+TASK [nexus3 : debug] *************************************************************************************************************************************************************************
+ok: [192.168.2.200] => {
+    "msg": "get init password ok fcb095d7-88d1-4f7e-a281-b097dff5699c "
+}
+FAILED - RETRYING: 检测 nexus 是否启动完毕 (30 retries left).
+FAILED - RETRYING: 检测 nexus 是否启动完毕 (29 retries left).
+
+TASK [nexus3 : 检测 nexus 是否启动完毕] ***************************************************************************************************************************************************************
+ok: [192.168.2.200]
+
+TASK [nexus3 : 使用 nexus 的初始密码进行集群的初始化操作(上传脚本)] ************************************************************************************************************************************************
+ok: [192.168.2.200] => (item=createFileBlobStore.json)
+ok: [192.168.2.200] => (item=createDockerHosted.json)
+ok: [192.168.2.200] => (item=enableDockerRealm.json)
+ok: [192.168.2.200] => (item=changePassword.json)
+
+TASK [nexus3 : 使用 nexus 的初始密码进行集群的初始化操作(执行脚本)] ************************************************************************************************************************************************
+ok: [192.168.2.200] => (item=createFileBlobStore)
+ok: [192.168.2.200] => (item=createDockerHosted)
+ok: [192.168.2.200] => (item=enableDockerRealm)
+ok: [192.168.2.200] => (item=changePassword)
+
+TASK [nexus3 : Login private registry and force re-authorization] *****************************************************************************************************************************
+changed: [192.168.2.200]
+
+TASK [nexus3 : Pull all image from configuration] *********************************************************************************************************************************************
+ok: [192.168.2.200] => (item={u'tag': u'3.1', u'group': u'google_containers', u'name': u'pause', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+ok: [192.168.2.200] => (item={u'tag': u'3.3.10', u'group': u'google_containers', u'name': u'etcd', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+ok: [192.168.2.200] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-apiserver', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+ok: [192.168.2.200] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-controller-manager', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+ok: [192.168.2.200] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-scheduler', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+ok: [192.168.2.200] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-proxy', u'repository': u'registry.aliyuncs.com', u'prepull': False, u'target_group': u'google_containers'})
+ok: [192.168.2.200] => (item={u'tag': u'1.5.0', u'group': u'google_containers', u'name': u'coredns', u'repository': u'registry.aliyuncs.com', u'prepull': False, u'target_group': u'google_containers'})
+ok: [192.168.2.200] => (item={u'tag': u'v0.11.0-amd64', u'group': u'coreos', u'name': u'flannel', u'repository': u'quay-mirror.qiniu.com', u'prepull': False, u'target_group': u'coreos'})
+ok: [192.168.2.200] => (item={u'tag': u'0.25.0', u'group': u'kubernetes-ingress-controller', u'name': u'nginx-ingress-controller', u'repository': u'quay-mirror.qiniu.com', u'prepull': False, u'target_group': u'kubernetes-ingress-controller'})
+ok: [192.168.2.200] => (item={u'tag': u'latest', u'group': u'sonatype', u'name': u'nexus3', u'repository': u'registry-1.docker.io', u'prepull': False, u'target_group': u'sonatype'})
+ok: [192.168.2.200] => (item={u'tag': u'1.5', u'group': u'googlecontainer', u'name': u'defaultbackend-amd64', u'repository': u'registry-1.docker.io', u'prepull': False, u'target_group': u'google_containers'})
+
+TASK [nexus3 : Tag image and push to private registry] ****************************************************************************************************************************************
+changed: [192.168.2.200] => (item={u'tag': u'3.1', u'group': u'google_containers', u'name': u'pause', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.200] => (item={u'tag': u'3.3.10', u'group': u'google_containers', u'name': u'etcd', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.200] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-apiserver', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.200] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-controller-manager', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.200] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-scheduler', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.200] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-proxy', u'repository': u'registry.aliyuncs.com', u'prepull': False, u'target_group': u'google_containers'})
+changed: [192.168.2.200] => (item={u'tag': u'1.5.0', u'group': u'google_containers', u'name': u'coredns', u'repository': u'registry.aliyuncs.com', u'prepull': False, u'target_group': u'google_containers'})
+changed: [192.168.2.200] => (item={u'tag': u'v0.11.0-amd64', u'group': u'coreos', u'name': u'flannel', u'repository': u'quay-mirror.qiniu.com', u'prepull': False, u'target_group': u'coreos'})
+changed: [192.168.2.200] => (item={u'tag': u'0.25.0', u'group': u'kubernetes-ingress-controller', u'name': u'nginx-ingress-controller', u'repository': u'quay-mirror.qiniu.com', u'prepull': False, u'target_group': u'kubernetes-ingress-controller'})
+changed: [192.168.2.200] => (item={u'tag': u'latest', u'group': u'sonatype', u'name': u'nexus3', u'repository': u'registry-1.docker.io', u'prepull': False, u'target_group': u'sonatype'})
+changed: [192.168.2.200] => (item={u'tag': u'1.5', u'group': u'googlecontainer', u'name': u'defaultbackend-amd64', u'repository': u'registry-1.docker.io', u'prepull': False, u'target_group': u'google_containers'})
+
+PLAY [etcd] ***********************************************************************************************************************************************************************************
+
+TASK [docker : 准备docker相关目录] ******************************************************************************************************************************************************************
+ok: [192.168.2.11] => (item=/usr/bin)
+ok: [192.168.2.12] => (item=/usr/bin)
+ok: [192.168.2.13] => (item=/usr/bin)
+changed: [192.168.2.11] => (item=/etc/docker)
+changed: [192.168.2.12] => (item=/etc/docker)
+changed: [192.168.2.13] => (item=/etc/docker)
+
+TASK [docker : 下载 docker 二进制文件(>= 18.09.x)] ***************************************************************************************************************************************************
+changed: [192.168.2.12] => (item=containerd)
+changed: [192.168.2.13] => (item=containerd)
+changed: [192.168.2.11] => (item=containerd)
+changed: [192.168.2.13] => (item=containerd-shim)
+changed: [192.168.2.12] => (item=containerd-shim)
+changed: [192.168.2.11] => (item=containerd-shim)
+changed: [192.168.2.13] => (item=docker-init)
+changed: [192.168.2.12] => (item=docker-init)
+changed: [192.168.2.11] => (item=docker-init)
+changed: [192.168.2.12] => (item=runc)
+changed: [192.168.2.13] => (item=runc)
+changed: [192.168.2.11] => (item=runc)
+changed: [192.168.2.13] => (item=docker)
+changed: [192.168.2.12] => (item=docker)
+changed: [192.168.2.11] => (item=docker)
+changed: [192.168.2.11] => (item=ctr)
+changed: [192.168.2.12] => (item=ctr)
+changed: [192.168.2.13] => (item=ctr)
+changed: [192.168.2.12] => (item=dockerd)
+changed: [192.168.2.11] => (item=dockerd)
+changed: [192.168.2.13] => (item=dockerd)
+changed: [192.168.2.11] => (item=docker-proxy)
+changed: [192.168.2.12] => (item=docker-proxy)
+changed: [192.168.2.13] => (item=docker-proxy)
+
+TASK [docker : docker国内镜像加速] ******************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [docker : flush-iptables] ****************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [docker : 创建docker的systemd unit文件] *******************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.13]
+changed: [192.168.2.12]
+
+TASK [docker : 开机启用docker 服务] *****************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [docker : 开启docker 服务] *******************************************************************************************************************************************************************
+changed: [192.168.2.13]
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+
+TASK [docker : 轮询等待 docker 启动完成] **************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 创建kube-node 相关目录] *************************************************************************************************************************************************************
+changed: [192.168.2.11] => (item=/var/lib/kubelet)
+changed: [192.168.2.12] => (item=/var/lib/kubelet)
+changed: [192.168.2.13] => (item=/var/lib/kubelet)
+changed: [192.168.2.11] => (item=/var/lib/kube-proxy)
+changed: [192.168.2.12] => (item=/var/lib/kube-proxy)
+changed: [192.168.2.13] => (item=/var/lib/kube-proxy)
+changed: [192.168.2.11] => (item=/etc/cni/net.d)
+changed: [192.168.2.12] => (item=/etc/cni/net.d)
+changed: [192.168.2.13] => (item=/etc/cni/net.d)
+changed: [192.168.2.11] => (item=/etc/kubernetes/yaml)
+changed: [192.168.2.12] => (item=/etc/kubernetes/yaml)
+changed: [192.168.2.13] => (item=/etc/kubernetes/yaml)
+
+TASK [kubelet : 下载 kubelet, kubectl, cni plugins] *********************************************************************************************************************************************
+changed: [192.168.2.12] => (item=kubelet)
+changed: [192.168.2.11] => (item=kubelet)
+changed: [192.168.2.13] => (item=kubelet)
+changed: [192.168.2.12] => (item=kubectl)
+changed: [192.168.2.11] => (item=kubectl)
+changed: [192.168.2.13] => (item=kubectl)
+changed: [192.168.2.12] => (item=bridge)
+changed: [192.168.2.11] => (item=bridge)
+changed: [192.168.2.13] => (item=bridge)
+changed: [192.168.2.12] => (item=host-local)
+changed: [192.168.2.11] => (item=host-local)
+changed: [192.168.2.12] => (item=loopback)
+changed: [192.168.2.13] => (item=host-local)
+changed: [192.168.2.11] => (item=loopback)
+changed: [192.168.2.12] => (item=portmap)
+changed: [192.168.2.13] => (item=loopback)
+changed: [192.168.2.11] => (item=portmap)
+changed: [192.168.2.12] => (item=flannel)
+changed: [192.168.2.13] => (item=portmap)
+changed: [192.168.2.11] => (item=flannel)
+changed: [192.168.2.13] => (item=flannel)
+
+TASK [kubelet : Login private registry and force re-authorization] ****************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : Pull all image from configuration] ********************************************************************************************************************************************
+changed: [192.168.2.12] => (item={u'tag': u'3.1', u'group': u'google_containers', u'name': u'pause', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.13] => (item={u'tag': u'3.1', u'group': u'google_containers', u'name': u'pause', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.11] => (item={u'tag': u'3.1', u'group': u'google_containers', u'name': u'pause', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.11] => (item={u'tag': u'3.3.10', u'group': u'google_containers', u'name': u'etcd', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.12] => (item={u'tag': u'3.3.10', u'group': u'google_containers', u'name': u'etcd', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.13] => (item={u'tag': u'3.3.10', u'group': u'google_containers', u'name': u'etcd', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.12] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-apiserver', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.13] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-apiserver', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.11] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-apiserver', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.12] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-controller-manager', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.12] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-scheduler', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.13] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-controller-manager', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.11] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-controller-manager', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.13] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-scheduler', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+changed: [192.168.2.11] => (item={u'tag': u'v1.15.1', u'group': u'google_containers', u'name': u'kube-scheduler', u'repository': u'registry.aliyuncs.com', u'prepull': True, u'target_group': u'google_containers'})
+
+TASK [kubelet : 准备kubelet 证书签名请求] *************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 创建 kubelet 证书与私钥] *************************************************************************************************************************************************************
+changed: [192.168.2.13]
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+
+TASK [kubelet : 设置集群参数] ***********************************************************************************************************************************************************************
+changed: [192.168.2.13]
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+
+TASK [kubelet : 设置客户端认证参数] ********************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 设置上下文参数] **********************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 选择默认上下文] **********************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 注册变量 DNS_SVC_IP] **************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 设置变量 CLUSTER_DNS_SVC_IP] ******************************************************************************************************************************************************
+ok: [192.168.2.11]
+ok: [192.168.2.12]
+ok: [192.168.2.13]
+
+TASK [kubelet : 准备 cni配置文件] *******************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 创建kubelet的配置文件] ***************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 创建kubelet的systemd unit文件] *****************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 开机启用kubelet 服务] ***************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 开启kubelet 服务] *****************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [kubelet : 轮询等待 kubelet 启动完成] ************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [etcd : prepare some dirs] ***************************************************************************************************************************************************************
+ok: [192.168.2.11] => (item=/etc/kubernetes/manifests)
+ok: [192.168.2.12] => (item=/etc/kubernetes/manifests)
+ok: [192.168.2.13] => (item=/etc/kubernetes/manifests)
+
+TASK [etcd : 创建etcd的yaml文件] *******************************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+TASK [etcd : register kubelet status] *********************************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+
+PLAY [kube_master] ****************************************************************************************************************************************************************************
+
+TASK [kube_master : 创建kube_master 相关目录] *******************************************************************************************************************************************************
+ok: [192.168.2.11] => (item=/etc/kubernetes/manifests)
+
+TASK [kube_master : 注册变量 KUBERNETES_SVC_IP] ***************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [kube_master : 设置变量 CLUSTER_KUBERNETES_SVC_IP] *******************************************************************************************************************************************
+ok: [192.168.2.11]
+
+TASK [kube_master : 创建 kubernetes 证书签名请求] *****************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [kube_master : 创建 kubernetes 证书和私钥] ******************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [kube_master : 创建 aggregator proxy证书签名请求] ************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [kube_master : 创建 aggregator-proxy证书和私钥] *************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [kube_master : 创建 master 服务的 manifests 文件] ***********************************************************************************************************************************************
+changed: [192.168.2.11] => (item=kube-apiserver.yaml)
+changed: [192.168.2.11] => (item=kube-controller-manager.yaml)
+changed: [192.168.2.11] => (item=kube-scheduler.yaml)
+
+TASK [kube_master : 重新加载 master 服务] ***********************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [kube_master : 等待 kube-apiserver 启动完毕] ***************************************************************************************************************************************************
+ok: [192.168.2.11]
+
+TASK [kube_master : create secret for kubernetes access docker private registry] **************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [kube_proxy : 创建 kube-proxy 的配置文件] *******************************************************************************************************************************************************
+changed: [192.168.2.11] => (item=kube-proxy-cm.yaml)
+changed: [192.168.2.11] => (item=kube-proxy-ds.yaml)
+
+TASK [kube_proxy : 应用 kube-proxy 配置文件到 kubernetes] ********************************************************************************************************************************************
+changed: [192.168.2.11] => (item=kube-proxy-cm.yaml)
+changed: [192.168.2.11] => (item=kube-proxy-ds.yaml)
+FAILED - RETRYING: wait kube-proxy running (15 retries left).
+FAILED - RETRYING: wait kube-proxy running (14 retries left).
+
+TASK [kube_proxy : wait kube-proxy running] ***************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+PLAY [kube_node] ******************************************************************************************************************************************************************************
+
+PLAY [kube_master,kube_node] ******************************************************************************************************************************************************************
+
+TASK [flannel : generate flannel yaml file] ***************************************************************************************************************************************************
+changed: [192.168.2.12] => (item=kube-flannel-rbac.yaml)
+changed: [192.168.2.13] => (item=kube-flannel-rbac.yaml)
+changed: [192.168.2.11] => (item=kube-flannel-rbac.yaml)
+changed: [192.168.2.12] => (item=kube-flannel-cm.yaml)
+changed: [192.168.2.13] => (item=kube-flannel-cm.yaml)
+changed: [192.168.2.11] => (item=kube-flannel-cm.yaml)
+changed: [192.168.2.12] => (item=kube-flannel-ds.yaml)
+changed: [192.168.2.13] => (item=kube-flannel-ds.yaml)
+changed: [192.168.2.11] => (item=kube-flannel-ds.yaml)
+
+TASK [flannel : apply flannel to kubernetes] **************************************************************************************************************************************************
+changed: [192.168.2.11] => (item=kube-flannel-rbac.yaml)
+changed: [192.168.2.11] => (item=kube-flannel-cm.yaml)
+changed: [192.168.2.11] => (item=kube-flannel-ds.yaml)
+
+TASK [flannel : delete default cni config file] ***********************************************************************************************************************************************
+changed: [192.168.2.11]
+changed: [192.168.2.12]
+changed: [192.168.2.13]
+FAILED - RETRYING: wait flannel finish startup (30 retries left).
+FAILED - RETRYING: wait flannel finish startup (29 retries left).
+
+TASK [flannel : wait flannel finish startup] **************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+PLAY [kube_master] ****************************************************************************************************************************************************************************
+
+TASK [addon : 创建 addon 相关目录] ******************************************************************************************************************************************************************
+changed: [192.168.2.11] => (item=/etc/kubernetes/yaml/ingress-nginx)
+changed: [192.168.2.11] => (item=/etc/kubernetes/yaml/coredns)
+changed: [192.168.2.11] => (item=/etc/kubernetes/yaml/demoapp)
+
+TASK [addon : generate coredns yaml file] *****************************************************************************************************************************************************
+changed: [192.168.2.11] => (item=coredns/coredns-rbac.yaml)
+changed: [192.168.2.11] => (item=coredns/coredns-cm.yaml)
+changed: [192.168.2.11] => (item=coredns/coredns-dp.yaml)
+changed: [192.168.2.11] => (item=coredns/coredns-svc.yaml)
+
+TASK [addon : apply coredns to kubernetes] ****************************************************************************************************************************************************
+changed: [192.168.2.11] => (item=coredns/coredns-rbac.yaml)
+changed: [192.168.2.11] => (item=coredns/coredns-cm.yaml)
+changed: [192.168.2.11] => (item=coredns/coredns-dp.yaml)
+changed: [192.168.2.11] => (item=coredns/coredns-svc.yaml)
+FAILED - RETRYING: wait coredns finish startup (30 retries left).
+
+TASK [addon : wait coredns finish startup] ****************************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [addon : generate ingress-nginx yaml file] ***********************************************************************************************************************************************
+changed: [192.168.2.11] => (item=ingress-nginx/ingress-nginx-ns.yaml)
+changed: [192.168.2.11] => (item=ingress-nginx/ingress-nginx-rbac.yaml)
+changed: [192.168.2.11] => (item=ingress-nginx/ingress-nginx-cm.yaml)
+changed: [192.168.2.11] => (item=ingress-nginx/ingress-nginx-ds.yaml)
+changed: [192.168.2.11] => (item=ingress-nginx/ingress-nginx-svc.yaml)
+changed: [192.168.2.11] => (item=ingress-nginx/default-http-backend.yaml)
+
+TASK [addon : apply ingress-nginx to kubernetes] **********************************************************************************************************************************************
+changed: [192.168.2.11] => (item=ingress-nginx/ingress-nginx-ns.yaml)
+changed: [192.168.2.11] => (item=ingress-nginx/ingress-nginx-rbac.yaml)
+changed: [192.168.2.11] => (item=ingress-nginx/ingress-nginx-cm.yaml)
+changed: [192.168.2.11] => (item=ingress-nginx/ingress-nginx-ds.yaml)
+changed: [192.168.2.11] => (item=ingress-nginx/ingress-nginx-svc.yaml)
+changed: [192.168.2.11] => (item=ingress-nginx/default-http-backend.yaml)
+
+TASK [addon : create secret for kubernetes access docker private registry] ********************************************************************************************************************
+changed: [192.168.2.11]
+FAILED - RETRYING: wait ingress-nginx finish startup (15 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (14 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (13 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (12 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (11 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (10 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (9 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (8 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (7 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (6 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (5 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (4 retries left).
+FAILED - RETRYING: wait ingress-nginx finish startup (3 retries left).
+
+TASK [addon : wait ingress-nginx finish startup] **********************************************************************************************************************************************
+changed: [192.168.2.11]
+
+TASK [addon : 分发 addon 文件] ********************************************************************************************************************************************************************
+changed: [192.168.2.11] => (item=demoapp/demo-app.yaml)
+changed: [192.168.2.11] => (item=demoapp/demo-ingress.yaml)
+
+TASK [addon : 应用 demo-app 配置文件到到kubernetes] ***************************************************************************************************************************************************
+changed: [192.168.2.11] => (item=demoapp/demo-app.yaml)
+changed: [192.168.2.11] => (item=demoapp/demo-ingress.yaml)
+FAILED - RETRYING: 轮询等待 demoapp 运行 (20 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (19 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (18 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (17 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (16 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (15 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (14 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (13 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (12 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (11 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (10 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (9 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (8 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (7 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (6 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (5 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (4 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (3 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (2 retries left).
+FAILED - RETRYING: 轮询等待 demoapp 运行 (1 retries left).
+
+TASK [addon : 轮询等待 demoapp 运行] ****************************************************************************************************************************************************************
+fatal: [192.168.2.11]: FAILED! => {"attempts": 20, "changed": true, "cmd": "/usr/bin/kubectl get pod |grep 'myapp'", "delta": "0:00:00.105324", "end": "2019-08-17 02:38:04.522617", "rc": 0, "start": "2019-08-17 02:38:04.417293", "stderr": "", "stderr_lines": [], "stdout": "myapp-deploy-f4db5d79c-69rt2   0/1     ContainerCreating   0          48s", "stdout_lines": ["myapp-deploy-f4db5d79c-69rt2   0/1     ContainerCreating   0          48s"]}
+...ignoring
+
+PLAY RECAP ************************************************************************************************************************************************************************************
+192.168.2.10               : ok=9    changed=1    unreachable=0    failed=0    skipped=19   rescued=0    ignored=0
+192.168.2.11               : ok=83   changed=71   unreachable=0    failed=0    skipped=22   rescued=0    ignored=1
+192.168.2.12               : ok=55   changed=46   unreachable=0    failed=0    skipped=24   rescued=0    ignored=0
+192.168.2.13               : ok=55   changed=46   unreachable=0    failed=0    skipped=24   rescued=0    ignored=0
+192.168.2.200              : ok=28   changed=12   unreachable=0    failed=0    skipped=19   rescued=0    ignored=0
+localhost                  : ok=17   changed=14   unreachable=0    failed=0    skipped=2    rescued=0    ignored=0

@@ -1,0 +1,17 @@
+- name: Prepare certificate request files for etcd
+  template: src={{ item }}.j2 dest={{ base_dir }}/.cluster/ssl/etcd/{{ item }}
+  with_items:
+    - etcd-server-csr.json
+    - etcd-client-csr.json
+    - etcd-peer-csr.json
+
+- name: Create certificate and private keys for etcd
+  shell: "cd {{ base_dir }}/.cluster/ssl/etcd && {{ base_dir }}/bin/cfssl/cfssl gencert \
+        -ca={{ base_dir }}/.cluster/ssl/ca.pem \
+        -ca-key={{ base_dir }}/.cluster/ssl/ca-key.pem \
+        -config={{ base_dir }}/.cluster/ssl/ca-config.json \
+        -profile={{ item }} {{ item }}-csr.json | {{ base_dir }}/bin/cfssl/cfssljson -bare {{ item }}"
+  with_items:
+    - etcd-server
+    - etcd-client
+    - etcd-peer

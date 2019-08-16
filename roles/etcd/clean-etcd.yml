@@ -1,0 +1,9 @@
+# WARNNING: clean 'etcd' nodes service & data
+- hosts:
+  - etcd
+  tasks:
+  - name: remove files and dirs
+    file: name={{ item }} state=absent
+    with_items:
+    - "/var/lib/etcd"
+    - "/etc/kubernetes/manifests/etcd.yaml"

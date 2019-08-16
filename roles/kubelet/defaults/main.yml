@@ -1,0 +1,60 @@
+kube_proxy_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/kube-proxy:v1.15.1"
+pause_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/pause:3.1"
+
+# 默认使用kube-proxy的 'iptables' 模式，可选 'ipvs' 模式(experimental)
+PROXY_MODE: "ipvs"
+
+# 基础容器镜像
+
+# Kubelet 根目录
+KUBELET_ROOT_DIR: "/var/lib/kubelet"
+
+# node节点最大pod 数
+MAX_PODS: 512
+
+
+# 配置kubelet的hard eviction条件
+HARD_EVICTION: "memory.available<500Mi,nodefs.available<10%"
+
+# 设置 APISERVER 地址
+KUBE_APISERVER: "{%- if inventory_hostname in groups['kube_master'] -%} \
+                     https://{{ inventory_hostname }}:6443 \
+                 {%- else -%} \
+                     {%- if groups['kube_master']|length > 1 -%} \
+                         https://127.0.0.1:6443 \
+                     {%- else -%} \
+                         https://{{ groups['kube_master'][0] }}:6443 \
+                     {%- endif -%} \
+                 {%- endif -%}"
+
+DOCKER_IMAGE_LIST:
+  - name: "pause"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "3.1"
+    prepull: true
+  - name: "etcd"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "3.3.10"
+    prepull: true
+  - name: "kube-apiserver"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "v1.15.1"
+    prepull: true
+  - name: "kube-controller-manager"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "v1.15.1"
+    prepull: true
+  - name: "kube-scheduler"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "v1.15.1"
+    prepull: true

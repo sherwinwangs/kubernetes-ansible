@@ -1,0 +1,20 @@
+- name: Generate demoapp yaml file
+  copy: src={{ base_dir }}/manifests/{{ item }} dest=/etc/kubernetes/yaml/{{ item }} mode=0600
+  with_items:
+    - demoapp/demo-app.yaml
+    - demoapp/demo-ingress.yaml
+
+- name: Apply demoapp to kubernetes
+  shell: "{{ bin_dir }}/kubectl apply -f /etc/kubernetes/yaml/{{ item }}"
+  with_items:
+    - demoapp/demo-app.yaml
+    - demoapp/demo-ingress.yaml
+  run_once: true
+
+- name: Waiting for demoapp start-up to complete it possible take up to two miniutes or long depends on your network and disk performance
+  shell: "{{ bin_dir }}/kubectl get pod |grep 'myapp'"
+  register: pod_status
+  until: '"Running" in pod_status.stdout'
+  retries: 20
+  delay: 2
+  ignore_errors: true

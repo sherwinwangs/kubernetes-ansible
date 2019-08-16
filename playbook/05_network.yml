@@ -1,0 +1,7 @@
+# Install network plugins, current only support flannel, default network mode is ipvs
+- hosts:
+  - kube_master
+  - kube_node
+  roles:
+    - flannel
+

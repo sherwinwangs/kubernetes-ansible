@@ -1,0 +1,33 @@
+- name: Delete redundant packages in the system
+  yum:
+    name:
+      - firewalld
+      - python-firewall
+      - firewalld-filesystem
+    state: absent
+
+- name: Add epel repo
+  yum: name=epel-release state=present #安装python-pip需要使用epel源
+
+
+- name: Install dependice packages for OS
+  package:
+    name:
+      - bash-completion     # bash命令补全工具，需要重新登录服务器生效
+      - conntrack-tools     # ipvs 模式需要
+      - ipset               # ipvs 模式需要
+      - ipvsadm             # ipvs 模式需要
+      - libseccomp          # 安装containerd需要
+      - psmisc              # 安装psmisc 才能使用命令killall，keepalive的监测脚本需要
+      - rsync               # 文件同步工具，分发证书等配置文件需要
+      - socat               # 用于port forwarding
+      - openssl             # 用于生成service account的私钥和证书
+      - python-netaddr      # 用于处理ip地址，生成DNS等svc的IP
+      - python-pip          # 用于通过pip install docker-py模块
+    state: present
+
+- name: Install python module from via pip module
+  pip:
+    name:
+      - docker-py
+    state: present

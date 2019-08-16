@@ -1,0 +1,7 @@
+# Install Nexus Used for docker private registry 
+- hosts:
+    - nexus
+  roles:
+    - docker
+    - nexus3
+

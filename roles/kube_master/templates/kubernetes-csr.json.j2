@@ -1,0 +1,26 @@
+{
+  "CN": "kubernetes",
+  "hosts": [
+    "127.0.0.1",
+    "{{ inventory_hostname }}",
+    "10.254.0.1",
+    "kubernetes",
+    "kubernetes.default",
+    "kubernetes.default.svc",
+    "kubernetes.default.svc.cluster",
+    "kubernetes.default.svc.cluster.local"
+  ],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "L": "BJ",
+      "ST": "Beijing",
+      "O": "system:masters",
+      "OU": "System"
+    }
+  ]
+}

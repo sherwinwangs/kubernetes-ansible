@@ -1,0 +1,9 @@
+# Prepare works for kubernetes installation
+- hosts:
+    - kube_master
+    - kube_node
+    - etcd
+    - nexus
+    - admin
+  roles:
+    - prepare

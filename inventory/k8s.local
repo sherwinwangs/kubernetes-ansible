@@ -1,0 +1,59 @@
+# 'etcd' cluster should have odd member(s) (1,3,5,...)
+# variable 'NODE_NAME' is the distinct name of a member in 'etcd' cluster
+[deploy]
+192.168.2.10 NODE_NAME=admin
+
+[etcd]
+192.168.2.11 NODE_NAME=etcd1
+
+# master node(s)
+[kube_master]
+192.168.2.11 NODE_NAME=master11
+
+# work node(s)
+[kube_node]
+192.168.2.21 NODE_NAME=node21
+192.168.2.11 NODE_NAME=master11
+
+# [optional] harbor server, a private docker registry
+# 'NEW_INSTALL': 'yes' to install a harbor server; 'no' to integrate with existed one
+[harbor]
+#192.168.2.10 HARBOR_DOMAIN="harbor.yourdomain.com" NEW_INSTALL=no
+
+
+# [optional] ntp server for the cluster
+[chrony]
+#192.168.2.10
+
+[all:vars]
+# --------- Main Variables ---------------
+# Cluster container-runtime supported: docker, containerd
+CONTAINER_RUNTIME="docker"
+
+# Network plugins supported: calico, flannel, kube-router, cilium, kube-ovn
+CLUSTER_NETWORK="flannel"
+
+# K8S Service CIDR, not overlap with node(host) networking
+SERVICE_CIDR="10.254.0.0/16"
+
+# Cluster CIDR (Pod CIDR), not overlap with node(host) networking
+CLUSTER_CIDR="10.244.0.0/16"
+
+# NodePort Range
+NODE_PORT_RANGE="20000-40000"
+
+# Cluster DNS Domain
+CLUSTER_DNS_DOMAIN="cluster.local."
+
+# -------- Additional Variables (don't change the default value right now)---
+# Binaries Directory
+bin_dir="/usr/bin"
+
+# CA and other components cert/key Directory
+ca_dir="/etc/kubernetes/pki"
+
+# Deploy Directory (workspace)
+base_dir="/root/kubernetes-ansible/download"
+
+ansible_ssh_user=root
+ansible_ssh_pass=abc123.

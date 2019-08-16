@@ -1,0 +1,43 @@
+{
+  "signing": {
+    "default": {
+      "expiry": "{{ CERT_EXPIRY }}"
+    },
+    "profiles": {
+      "kubernetes": {
+        "expiry": "{{ CERT_EXPIRY }}",
+        "usages": [
+          "signing",
+          "key encipherment",
+          "server auth",
+          "client auth"
+        ]
+      },
+      "etcd-server": {
+        "expiry": "{{ CERT_EXPIRY }}",
+        "usages": [
+          "signing",
+          "key encipherment",
+          "server auth"
+        ]
+      },
+      "etcd-client": {
+        "expiry": "{{ CERT_EXPIRY }}",
+        "usages": [
+          "signing",
+          "key encipherment",
+          "client auth"
+        ]
+      },
+      "etcd-peer": {
+        "expiry": "{{ CERT_EXPIRY }}",
+        "usages": [
+          "signing",
+          "key encipherment",
+          "server auth",
+          "client auth"
+        ]
+      }
+    }
+  }
+}

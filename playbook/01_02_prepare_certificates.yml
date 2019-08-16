@@ -1,0 +1,4 @@
+# Create certificate files and kubeconfig files to ensure that time is synchronized before execution
+- hosts: localhost
+  roles:
+    - certificates

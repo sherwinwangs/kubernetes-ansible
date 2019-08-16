@@ -1,0 +1,71 @@
+NEXUS_IMAGE: "sonatype/nexus3:latest"
+NEXUS_CONTAINER_NAME: "nexus3"
+NEXUS_DATA_DIR: "/data/nexus"
+
+DOCKER_IMAGE_LIST:
+  - name: "pause"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "3.1"
+    prepull: true
+  - name: "etcd"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "3.3.10"
+    prepull: true
+  - name: "kube-apiserver"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "v1.15.1"
+    prepull: true
+  - name: "kube-controller-manager"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "v1.15.1"
+    prepull: true
+  - name: "kube-scheduler"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "v1.15.1"
+    prepull: true
+  - name: "kube-proxy"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "v1.15.1"
+    prepull: false
+  - name: "coredns"
+    repository: "registry.aliyuncs.com"
+    group: "google_containers"
+    target_group: "google_containers"
+    tag: "1.5.0"
+    prepull: false
+  - name: "flannel"
+    repository: "quay-mirror.qiniu.com"
+    group: "coreos"
+    target_group: "coreos"
+    tag: "v0.11.0-amd64"
+    prepull: false
+  - name: "nginx-ingress-controller"
+    repository: "quay-mirror.qiniu.com"
+    group: "kubernetes-ingress-controller"
+    target_group: "kubernetes-ingress-controller"
+    tag: "0.25.0"
+    prepull: false
+  - name: "nexus3"
+    repository: "registry-1.docker.io"
+    group: "sonatype"
+    target_group: "sonatype"
+    tag: "latest"
+    prepull: false
+  - name: "defaultbackend-amd64"
+    repository: "registry-1.docker.io"
+    group: "googlecontainer"
+    target_group: "google_containers"
+    tag: "1.5"
+    prepull: false

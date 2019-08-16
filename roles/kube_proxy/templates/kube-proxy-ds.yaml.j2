@@ -1,0 +1,65 @@
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: kube-proxy
+  namespace: kube-system
+  labels:
+    app: kube-proxy
+    kubernetes.io/cluster-service: "true"
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: kube-proxy
+        kubernetes.io/cluster-service: "true"
+    spec:
+      imagePullSecrets:
+      - name: {{ PRIVATE_REGISTRY_SECRET_NAME }}
+      containers:
+        - name: kube-proxy
+          image: {{ kube_proxy_image }}
+          imagePullPolicy: IfNotPresent
+          command:
+            - /usr/local/bin/kube-proxy
+            - --config=/etc/kubernetes/kube-proxy/kube-proxy-config.conf
+            - --hostname-override=$(NODE_NAME)
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: kube-proxy-config-volume
+              mountPath: /etc/kubernetes/kube-proxy
+              readOnly: true
+            - name: kube-proxy-pki-volume
+              mountPath: /etc/kubernetes/pki
+              readOnly: true
+            - mountPath: /run/xtables.lock
+              name: xtables-lock
+            - mountPath: /lib/modules
+              name: lib-modules
+              readOnly: true
+      hostNetwork: true
+      volumes:
+        - name: kube-proxy-config-volume
+          configMap:
+            name: kube-proxy
+            defaultMode: 420
+        - name: kube-proxy-pki-volume
+          hostPath:
+            path: /etc/kubernetes/pki
+        - name: xtables-lock
+          hostPath:
+            path: /run/xtables.lock
+            type: FileOrCreate
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+            type: ""

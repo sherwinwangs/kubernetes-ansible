@@ -1,0 +1,64 @@
+# Synchronization time via chrony, note that if the time is not synchronized, the certificate will be invalid
+- hosts:
+    - kube_master
+    - kube_node
+    - etcd
+    - chrony
+    - nexus
+    - admin
+  roles:
+    - { role: chrony, when: "groups['chrony']|length > 0" }
+# Create certificate files and kubeconfig files to ensure that time is synchronized before execution
+- hosts: localhost
+  roles:
+    - certificates
+# Prepare works for kubernetes installation
+- hosts:
+    - kube_master
+    - kube_node
+    - etcd
+    - nexus
+    - admin
+  roles:
+    - prepare
+# Install Nexus Used for docker private registry 
+- hosts:
+    - nexus
+  roles:
+    - docker
+    - nexus3
+
+# Install etcd (support cluster or single node depends on the etcd hosts number)
+- hosts: etcd
+  roles:
+  - docker
+  - kubelet
+  - etcd
+
+# Install services on kubenetes master
+- hosts:
+  - kube_master
+  roles:
+  - { role: kubelet, when: "inventory_hostname not in groups['etcd']" }
+  - { role: kube_master, when: "inventory_hostname in groups['kube_master']" }
+  - { role: kube_proxy, when: "inventory_hostname  in groups['kube_master']" }
+
+# Install services on kubernetes nodes
+- hosts:
+  - kube_node
+  roles:
+  - { role: kubelet, when: "inventory_hostname not in groups['etcd']" }
+
+# Install network plugins, current only support flannel, default network mode is ipvs
+- hosts:
+  - kube_master
+  - kube_node
+  roles:
+    - flannel
+
+# Install addon services
+- hosts:
+  - kube_master
+  roles:
+    - { role: addon, when: inventory_hostname in groups.kube_master.0 }
+

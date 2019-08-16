@@ -1,0 +1,11 @@
+# 创建 CA 证书
+- import_tasks: ca.yml
+
+# 创建 admin 证书及 kubeconfig 文件
+- import_tasks: kubeconfig.yml
+
+# 创建 etcd 证书
+- import_tasks: etcd.yml
+
+# 创建 kube-proxy 证书
+- import_tasks: kube_proxy.yml

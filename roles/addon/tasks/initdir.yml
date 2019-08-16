@@ -1,0 +1,6 @@
+- name: Create directory for addon services
+  file: name={{ item }} state=directory
+  with_items:
+    - /etc/kubernetes/yaml/ingress-nginx
+    - /etc/kubernetes/yaml/coredns
+    - /etc/kubernetes/yaml/demoapp

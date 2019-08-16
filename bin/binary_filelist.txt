@@ -1,0 +1,26 @@
+bin/
+├── cfssl
+│   ├── cfssl
+│   ├── cfssl-certinfo
+│   └── cfssljson
+├── docker
+│   ├── containerd
+│   ├── containerd-shim
+│   ├── ctr
+│   ├── docker
+│   ├── dockerd
+│   ├── docker-init
+│   ├── docker-proxy
+│   └── runc
+├── etcd
+│   └── etcdctl
+└── kubernetes
+    ├── bandwidth
+    ├── bridge
+    ├── flannel
+    ├── host-local
+    ├── kubectl
+    ├── kubelet
+    ├── loopback
+    ├── mounter
+    └── portmap

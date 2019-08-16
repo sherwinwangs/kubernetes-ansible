@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    component: kube-apiserver
+    tier: control-plane
+  name: kube-apiserver
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - kube-apiserver
+    - --advertise-address={{ inventory_hostname }}
+    - --allow-privileged=true
+    - --anonymous-auth=false
+    - --authorization-mode=Node,RBAC
+    - --bind-address={{ inventory_hostname }}
+    - --client-ca-file={{ ca_dir }}/ca.pem
+    - --endpoint-reconciler-type=lease
+    - --etcd-cafile={{ ca_dir }}/ca.pem
+    - --etcd-certfile={{ ca_dir }}/etcd/etcd-client.pem
+    - --etcd-keyfile={{ ca_dir }}/etcd/etcd-client-key.pem
+    - --etcd-servers={{ ETCD_ENDPOINTS }}
+    - --insecure-bind-address=127.0.0.1
+    - --kubelet-https=true
+    - --kubelet-client-certificate={{ ca_dir }}/admin.pem
+    - --kubelet-client-key={{ ca_dir }}/admin-key.pem
+    - --service-account-key-file={{ ca_dir }}/ca-key.pem
+    - --service-cluster-ip-range={{ SERVICE_CIDR }}
+    - --service-node-port-range={{ NODE_PORT_RANGE }}
+    - --tls-cert-file={{ ca_dir }}/kubernetes.pem
+    - --tls-private-key-file={{ ca_dir }}/kubernetes-key.pem
+    - --requestheader-client-ca-file={{ ca_dir }}/ca.pem
+    - --requestheader-allowed-names=
+    - --requestheader-extra-headers-prefix=X-Remote-Extra-
+    - --requestheader-group-headers=X-Remote-Group
+    - --requestheader-username-headers=X-Remote-User
+    - --proxy-client-cert-file={{ ca_dir }}/aggregator-proxy.pem
+    - --proxy-client-key-file={{ ca_dir }}/aggregator-proxy-key.pem
+    - --enable-aggregator-routing=true
+    - --v=2
+    image: {{ kube_apiserver_image }}
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 8080
+        scheme: HTTP
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: kube-apiserver
+    resources:
+      requests:
+        cpu: 250m
+    volumeMounts:
+    - mountPath: /etc/ssl/certs
+      name: ca-certs
+      readOnly: true
+    - mountPath: /etc/pki
+      name: etc-pki
+      readOnly: true
+    - mountPath: /etc/kubernetes/pki
+      name: k8s-certs
+      readOnly: true
+  hostNetwork: true
+  priorityClassName: system-cluster-critical
+  volumes:
+  - hostPath:
+      path: /etc/ssl/certs
+      type: DirectoryOrCreate
+    name: ca-certs
+  - hostPath:
+      path: /etc/pki
+      type: DirectoryOrCreate
+    name: etc-pki
+  - hostPath:
+      path: /etc/kubernetes/pki
+      type: DirectoryOrCreate
+    name: k8s-certs
+status: {}

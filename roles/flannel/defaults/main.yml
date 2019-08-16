@@ -1,0 +1,1 @@
+flanneld_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/coreos/flannel:v0.11.0-amd64"

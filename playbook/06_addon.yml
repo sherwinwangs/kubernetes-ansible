@@ -1,0 +1,6 @@
+# Install addon services
+- hosts:
+  - kube_master
+  roles:
+    - { role: addon, when: inventory_hostname in groups.kube_master.0 }
+

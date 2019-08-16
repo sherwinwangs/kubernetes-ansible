@@ -1,0 +1,64 @@
+# the node used as deploy
+[admin]
+192.168.2.10 NODE_NAME=admin
+
+[etcd]
+192.168.2.11 NODE_NAME=etcd1
+192.168.2.12 NODE_NAME=etcd2
+192.168.2.13 NODE_NAME=etcd3
+
+# master node(s)
+[kube_master]
+192.168.2.11 NODE_NAME=master11
+
+# work node(s)
+[kube_node]
+192.168.2.12 NODE_NAME=master12
+192.168.2.13 NODE_NAME=master13
+
+# [optional] nexus server, a private docker registry and maven repo
+[nexus]
+192.168.2.200
+
+# [optional] ntp server for the cluster
+[chrony]
+192.168.2.11
+
+[all:vars]
+# --------- Main Variables ---------------
+# Cluster container-runtime supported: docker, containerd
+CONTAINER_RUNTIME="docker"
+
+# Network plugins supported: calico, flannel, kube-router, cilium, kube-ovn
+CLUSTER_NETWORK="flannel"
+
+# K8S Service CIDR, not overlap with node(host) networking
+SERVICE_CIDR="10.254.0.0/16"
+
+# Cluster CIDR (Pod CIDR), not overlap with node(host) networking
+CLUSTER_CIDR="10.244.0.0/16"
+
+# NodePort Range
+NODE_PORT_RANGE="20000-40000"
+
+# Cluster DNS Domain
+CLUSTER_DNS_DOMAIN="cluster.local."
+
+NETWORK_INTERFACE="eth0"
+
+# -------- Additional Variables (don't change the default value right now)---
+# Binaries Directory
+bin_dir="/usr/bin"
+
+# CA and other components cert/key Directory
+ca_dir="/etc/kubernetes/pki"
+
+# Deploy Directory (workspace)
+base_dir="/opt/kubernetes-ansible"
+
+ansible_ssh_user=root
+ansible_ssh_pass=abc123.
+
+NEXUS_ADMIN_PASSWORD="admin123"
+NEXUS_DOCKER_REGISTRY_PORT=9001
+PRIVATE_REGISTRY_SECRET_NAME="registrysecret"

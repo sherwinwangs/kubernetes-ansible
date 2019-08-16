@@ -1,0 +1,59 @@
+- name: Create directory for manifests
+  file: name={{ item }} state=directory
+  with_items:
+    - /etc/kubernetes/manifests
+
+# 设置 kubernetes svc ip (一般是 SERVICE_CIDR 中第一个IP)
+- name: Register variable KUBERNETES_SVC_IP
+  shell: echo {{ SERVICE_CIDR }}|cut -d/ -f1|awk -F. '{print $1"."$2"."$3"."$4+1}'
+  register: KUBERNETES_SVC_IP
+  tags: change_cert
+
+- name: Setting variable CLUSTER_KUBERNETES_SVC_IP
+  set_fact: CLUSTER_KUBERNETES_SVC_IP={{ KUBERNETES_SVC_IP.stdout }}
+  tags: change_cert
+
+
+- name: Prepare certificate request file for kubernetes
+  template: src=kubernetes-csr.json.j2 dest={{ ca_dir }}/kubernetes-csr.json
+  tags: change_cert
+
+- name: Create certificate and private keys for kubernetes
+  shell: "cd {{ ca_dir }} && {{ bin_dir }}/cfssl gencert \
+        -ca={{ ca_dir }}/ca.pem \
+        -ca-key={{ ca_dir }}/ca-key.pem \
+        -config={{ ca_dir }}/ca-config.json \
+        -profile=kubernetes kubernetes-csr.json | {{ bin_dir }}/cfssljson -bare kubernetes"
+  tags: change_cert
+
+- name: Prepare certificate request file for aggregator-proxy 
+  template: src=aggregator-proxy-csr.json.j2 dest={{ ca_dir }}/aggregator-proxy-csr.json
+
+- name: Create certificate and private keys for aggregator-proxy
+  shell: "cd {{ ca_dir }} && {{ bin_dir }}/cfssl gencert \
+        -ca={{ ca_dir }}/ca.pem \
+        -ca-key={{ ca_dir }}/ca-key.pem \
+        -config={{ ca_dir }}/ca-config.json \
+        -profile=kubernetes aggregator-proxy-csr.json | {{ bin_dir }}/cfssljson -bare aggregator-proxy"
+
+- name: Create manifests files for kube-master
+  template: src={{ item }}.j2 dest=/etc/kubernetes/manifests/{{ item }}
+  with_items:
+    - kube-apiserver.yaml
+    - kube-controller-manager.yaml
+    - kube-scheduler.yaml
+  tags: restart_master, upgrade_k8s
+
+- name: Restart kubelet to load kube-master manifests
+  shell: systemctl restart kubelet
+  ignore_errors: true
+
+- name: Waiting for kube-apiserver start-up to complete
+  uri:
+    url: http://127.0.0.1:8080
+  register: kubernetes_apiserver_running
+  until: kubernetes_apiserver_running.status == 200
+  retries: 30
+  delay: 2
+
+- import_tasks: create_registry_secret.yml

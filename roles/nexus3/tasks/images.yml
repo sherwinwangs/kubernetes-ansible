@@ -1,0 +1,23 @@
+# docker's basic auth makeup by user:password|base64,notice at end of string must not have \n
+# the token can be generate by command: echo 'admin:{{ NEXUS_ADMIN_PASSWORD }}' |tr -d '\n'|base64
+- name: Login private registry and force re-authorization
+  docker_login:
+    registry: "{{ inventory_hostname }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}"
+    username: "admin"
+    password: "{{ NEXUS_ADMIN_PASSWORD }}"
+    reauthorize: yes
+
+- name: Pull all image from configuration
+  docker_image:
+    name: "{{ item.repository }}/{{ item.group }}/{{ item.name }}:{{ item.tag }}"
+    source: pull
+  with_items: "{{ DOCKER_IMAGE_LIST }}"
+
+- name: Tag image and push to private registry
+  docker_image:
+    name: "{{ item.repository }}/{{ item.group }}/{{ item.name }}"
+    repository: "{{ inventory_hostname }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/{{ item.target_group }}/{{ item.name }}"
+    tag: "{{ item.tag }}"
+    push: yes
+    source: local
+  with_items: "{{ DOCKER_IMAGE_LIST }}"

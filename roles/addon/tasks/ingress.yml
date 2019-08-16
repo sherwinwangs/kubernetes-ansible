@@ -1,0 +1,39 @@
+- name: Generate ingress-nginx yaml file
+  template: src={{ item }}.j2 dest=/etc/kubernetes/yaml/{{ item }}
+  with_items:
+    - ingress-nginx/ingress-nginx-ns.yaml
+    - ingress-nginx/ingress-nginx-rbac.yaml
+    - ingress-nginx/ingress-nginx-cm.yaml
+    - ingress-nginx/ingress-nginx-ds.yaml
+    - ingress-nginx/ingress-nginx-svc.yaml
+    - ingress-nginx/default-http-backend.yaml
+
+- name: Apply ingress-nginx to kubernetes
+  shell: "{{ bin_dir }}/kubectl apply -f /etc/kubernetes/yaml/{{ item }}"
+  with_items:
+    - ingress-nginx/ingress-nginx-ns.yaml
+    - ingress-nginx/ingress-nginx-rbac.yaml
+    - ingress-nginx/ingress-nginx-cm.yaml
+    - ingress-nginx/ingress-nginx-ds.yaml
+    - ingress-nginx/ingress-nginx-svc.yaml
+    - ingress-nginx/default-http-backend.yaml
+  run_once: true
+
+- name: Create secret for kubernetes access docker private registry
+  shell: 'kubectl create secret docker-registry registrysecret \
+         --docker-server="{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}" \
+         --docker-username=admin \
+         --docker-password="{{ NEXUS_ADMIN_PASSWORD }}" \
+         --docker-email=sherwinwangs@hotmail.com \
+         -n ingress-nginx'
+  ignore_errors: true
+  tags: docker_registry
+
+
+- name: Waiting for demoapp start-up to complete it possible take up to two miniutes or long depends on your network and disk performance
+  shell: "{{ bin_dir }}/kubectl get pod -n ingress-nginx|grep 'nginx-ingress-controller'"
+  register: pod_status
+  until: '"Running" in pod_status.stdout'
+  retries: 60
+  delay: 2
+  ignore_errors: true

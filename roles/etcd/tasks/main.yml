@@ -1,0 +1,23 @@
+- name: Create directory for manifests
+  file: name={{ item }} state=directory
+  with_items:
+    - "/etc/kubernetes/manifests"
+
+- name: Gerenerate etcd yaml file
+  template: src=etcd.yaml.j2 dest=/etc/kubernetes/manifests/etcd.yaml
+  tags: upgrade_etcd
+
+
+- name: Register kubelet status
+  shell: "systemctl status kubelet.service|grep Active|grep -Po '(?<=\\().*(?=\\))'"
+  register: kubelet_status
+
+- name: Waiting for etcd start-up to complete
+  shell: "docker ps|grep etcd|grep -v pause"
+  register: etcd_status
+  until: '"etcd" in etcd_status.stdout'
+  retries: 8
+  delay: 8
+  tags: upgrade_etcd
+  when: kubelet_status == "running"
+

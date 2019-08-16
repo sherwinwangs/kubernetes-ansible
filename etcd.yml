@@ -1,0 +1,26 @@
+# 使用 chrony 同步节点时间【可选】
+- hosts:
+    - kube_master
+    - kube_node
+    - etcd
+    - chrony
+    - nexus
+    - admin
+  roles:
+    - { role: chrony, when: "groups['chrony']|length > 0" }
+# 创建 CA 证书，kubeconfig 等文件
+- hosts: localhost
+  roles:
+    - certificates# 对节点进行初始化操作
+- hosts:
+    - kube_master
+    - kube_node
+    - etcd
+    - nexus
+  roles:
+    - prepare# 安装 etcd 【支持单节点或集群】
+- hosts: etcd
+  roles:
+  - docker
+  - kubelet
+  - etcd
