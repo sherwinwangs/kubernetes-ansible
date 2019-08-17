@@ -1,8 +1,8 @@
-# WARNNING: clean 'etcd' nodes service & data
+# WARNNING: clean etcd data and configuration
 - hosts:
   - etcd
   tasks:
-  - name: remove files and dirs
+  - name: remove etcd data and yaml config
     file: name={{ item }} state=absent
     with_items:
     - "/var/lib/etcd"

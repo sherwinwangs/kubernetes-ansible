@@ -1,6 +1,6 @@
 {
-{% if ENABLE_MIRROR_REGISTRY %}
-  "registry-mirrors": {{ REG_MIRRORS }}, 
+{% if ENABLE_REGISTRY_MIRROR %}
+  "registry-mirrors": {{ REGISTRY_MIRRORS }}, 
 {% endif %}
 {% if ENABLE_REMOTE_API %}
   "hosts": ["tcp://0.0.0.0:2376", "unix:///var/run/docker.sock"],

@@ -1,0 +1,63 @@
+- name: Create nexus data dir
+  file: name={{ item }} state=directory owner=200 group=200 mode=0755
+  with_items:
+    - "{{ NEXUS_DATA_DIR }}/script"
+
+- name: Run nexus in the container
+  shell: "docker run -d --name {{ NEXUS_CONTAINER_NAME }} --network host -v {{ NEXUS_DATA_DIR }}:/nexus-data --restart=always {{ NEXUS_IMAGE }}"
+
+- name: Get the nexus's initial password
+  shell: "cat {{ NEXUS_DATA_DIR }}/admin.password"
+  register: nexus_init_password
+  until: nexus_init_password.stdout != ""
+  retries: 30
+  delay: 2
+  ignore_errors: true
+
+#- debug: msg="get init password ok {{ nexus_init_password.stdout }} "
+
+- name: Check if nexus is running
+  uri:
+    url: http://{{ inventory_hostname }}:8081
+  register: nexus_service_running
+  until: nexus_service_running.status == 200
+  retries: 30
+  delay: 2
+
+#- debug: msg="{{ lookup('template','{{ base_dir }}/roles/nexus3/templates/createFileBlobStore.json.j2') }} is a value from evaluation of this template"
+- name: Upload initialization script to Nexus via initial password 
+  uri:
+    url: http://{{ inventory_hostname }}:8081/service/rest/v1/script
+    url_username: "admin"
+    url_password: "{{ nexus_init_password.stdout }}"
+    force_basic_auth: yes
+    method: POST
+    body: "{{ lookup('template','../templates/{{ item }}.j2') }}"
+    body_format: json
+    status_code: 204
+  with_items:
+    - createFileBlobStore.json
+    - createDockerHosted.json
+    - enableDockerRealm.json
+    - changePassword.json
+  when: nexus_service_running.status == 200
+  ignore_errors: true
+
+- name: Execute initialization script with initial password on Nexus
+  uri:
+    url: http://{{ inventory_hostname }}:8081/service/rest/v1/script/{{ item }}/run
+    url_username: "admin"
+    url_password: "{{ nexus_init_password.stdout }}"
+    force_basic_auth: yes
+    method: POST
+    body_format: json
+    status_code: 200
+    headers:
+      Content-Type: "text/plain"
+  with_items:
+    - createFileBlobStore
+    - createDockerHosted
+    - enableDockerRealm
+    - changePassword
+  when: nexus_service_running.status == 200
+  ignore_errors: true

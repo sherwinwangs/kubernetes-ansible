@@ -1,21 +1,20 @@
-# docker日志相关
-
+# Docker log paramenters
 LOG_DRIVER: "json-file"
 LOG_LEVEL: "warn"
 LOG_MAX_SIZE: "10m"
 LOG_MAX_FILE: 3
 
-# docker容器存储目录
+# Docker datadir
 STORAGE_DIR: "/data/docker"
 
-# 开启Restful API
+# Enable Docker Restful API
 ENABLE_REMOTE_API: false
 
-# 启用 docker 仓库镜像
-ENABLE_MIRROR_REGISTRY: true
+# Enable docker registry mirror
+ENABLE_REGISTRY_MIRROR: true
 
-# 设置 docker 仓库镜像
-REG_MIRRORS: '["https://nvwtccbz.mirror.aliyuncs.com"]'
+# Setting docker registry mirror
+REGISTRY_MIRRORS: '["https://nvwtccbz.mirror.aliyuncs.com"]'
 
-# 信任的HTTP仓库
-#INSECURE_REG: '["127.0.0.1/8"]'
+# Insecurity registrys
+#INSECURE_REGISTRY: '["127.0.0.1/8"]'

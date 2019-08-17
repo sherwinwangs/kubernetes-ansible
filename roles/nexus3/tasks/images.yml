@@ -1,5 +1,4 @@
-# docker's basic auth makeup by user:password|base64,notice at end of string must not have \n
-# the token can be generate by command: echo 'admin:{{ NEXUS_ADMIN_PASSWORD }}' |tr -d '\n'|base64
+# Docker registry's basic auth,notice at end of string must not have \n  the token can be generate by command: echo 'admin:{{ NEXUS_ADMIN_PASSWORD }}' |tr -d '\n'|base64
 - name: Login private registry and force re-authorization
   docker_login:
     registry: "{{ inventory_hostname }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}"

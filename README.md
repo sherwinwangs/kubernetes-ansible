@@ -32,3 +32,5 @@ This project is used to setup kubernetes and ci/cd toolchain automatically via a
 19. 当etcd节点是kube_node的节点的话，kube_node这一步需要跳过
 20. 如果service的ip访问不通，但是pod的ip能访问通，请注意service的selector是否写的正确
 21. 第一步时间如果不同步，后面生成的证书就会有问题，这个问题暂时没解决，急需要解决
+22. init ansible controller machine script
+23. 部署服务之前对服务进行检查，如果检查已经安装，那么跳过。

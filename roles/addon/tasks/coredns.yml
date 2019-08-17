@@ -6,8 +6,7 @@
     - coredns/coredns-dp.yaml
     - coredns/coredns-svc.yaml
 
-# 只需单节点执行一次
-- name: Apply coredns to kubernetes
+- name: Apply coredns to kubernetes only run once on master node
   shell: "{{ bin_dir }}/kubectl apply -f /etc/kubernetes/yaml/{{ item }}"
   with_items:
     - coredns/coredns-rbac.yaml

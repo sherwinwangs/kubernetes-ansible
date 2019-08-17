@@ -1,7 +1,9 @@
-# etcd 集群服务地址列表, 根据etcd组成员自动生成
+# Etcd cluster service address list, automatically generated according to etcd group members
 TMP_ENDPOINTS: "{% for h in groups['etcd'] %}https://{{ h }}:2379,{% endfor %}"
 ETCD_ENDPOINTS: "{{ TMP_ENDPOINTS.rstrip(',') }}"
 NODE_CIDR_LEN: 24
+# setting kubernetes svc ip, default is the first cidr in SERVICE_CIDE, this ip is used in kubernetes-csr.json
+CLUSTER_KUBERNETES_SVC_IP: "{{ SERVICE_CIDR | ipaddr('net') | ipaddr(1) | ipaddr('address') }}"
 kube_apiserver_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/kube-apiserver:v1.15.1"
 kube_controller_manager_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/kube-controller-manager:v1.15.1"
 kube_scheduler_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/kube-scheduler:v1.15.1"

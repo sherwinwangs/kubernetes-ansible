@@ -1,9 +1,9 @@
 kube_proxy_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/kube-proxy:v1.15.1"
 
-# 默认使用kube-proxy的 'iptables' 模式，可选 'ipvs' 模式(experimental)
+# kube-proxy's iptables mode, ipvs or iptables(default value)
 PROXY_MODE: "ipvs"
 
-# 设置 APISERVER 地址
+# Setting APISERVERS ADDRESS
 KUBE_APISERVER: "{%- if inventory_hostname in groups['kube_master'] -%} \
                      https://{{ inventory_hostname }}:6443 \
                  {%- else -%} \

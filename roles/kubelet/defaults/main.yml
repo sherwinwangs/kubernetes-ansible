@@ -1,22 +1,17 @@
 kube_proxy_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/kube-proxy:v1.15.1"
 pause_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/pause:3.1"
 
-# 默认使用kube-proxy的 'iptables' 模式，可选 'ipvs' 模式(experimental)
-PROXY_MODE: "ipvs"
-
-# 基础容器镜像
-
-# Kubelet 根目录
+# Kubelet root dir
 KUBELET_ROOT_DIR: "/var/lib/kubelet"
 
-# node节点最大pod 数
+# Maximum number of pods that can be run on a node
 MAX_PODS: 512
 
 
-# 配置kubelet的hard eviction条件
+# Hard Eviction Conditions for Configuring Kubelet
 HARD_EVICTION: "memory.available<500Mi,nodefs.available<10%"
 
-# 设置 APISERVER 地址
+# Setting the address of APISERVER
 KUBE_APISERVER: "{%- if inventory_hostname in groups['kube_master'] -%} \
                      https://{{ inventory_hostname }}:6443 \
                  {%- else -%} \

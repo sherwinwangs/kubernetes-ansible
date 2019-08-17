@@ -1,11 +1,11 @@
-# 初始化配置文件目录
+# Create directory for configuration files
 - import_tasks: initdir.yml
 
-# 部署 coredns
+# Deploy coredns
 - import_tasks: coredns.yml
 
-# 部署 ingress
+# Deploy ingress
 - import_tasks: ingress.yml
 
-# 部署 demo-app
+# Deploy demo-app
 - import_tasks: demo-app.yml

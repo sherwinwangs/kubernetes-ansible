@@ -1,0 +1,71 @@
+- name: Prepare certificate request file for kubelet
+  template: src=kubelet-csr.json.j2 dest={{ ca_dir }}/kubelet-csr.json
+
+- name: Create certificate and private keys for kubelet
+  shell: "cd {{ ca_dir }} && {{ bin_dir }}/cfssl gencert \
+        -ca={{ ca_dir }}/ca.pem \
+        -ca-key={{ ca_dir }}/ca-key.pem \
+        -config={{ ca_dir }}/ca-config.json \
+        -profile=kubernetes kubelet-csr.json | {{ bin_dir }}/cfssljson -bare kubelet"
+
+- name: Setting cluster parameters
+  shell: "{{ bin_dir }}/kubectl config set-cluster kubernetes \
+        --certificate-authority={{ ca_dir }}/ca.pem \
+        --embed-certs=true \
+        --server={{ KUBE_APISERVER }} \
+	    --kubeconfig=/etc/kubernetes/kubelet.kubeconfig"
+
+- name: Setting client authentication parameters
+  shell: "{{ bin_dir }}/kubectl config set-credentials system:node:{{ inventory_hostname }} \
+        --client-certificate={{ ca_dir }}/kubelet.pem \
+        --embed-certs=true \
+        --client-key={{ ca_dir }}/kubelet-key.pem \
+        --kubeconfig=/etc/kubernetes/kubelet.kubeconfig"
+
+- name: Setting context references
+  shell: "{{ bin_dir }}/kubectl config set-context default \
+        --cluster=kubernetes \
+        --user=system:node:{{ inventory_hostname }} \
+        --kubeconfig=/etc/kubernetes/kubelet.kubeconfig"
+
+- name: Select the default context
+  shell: "{{ bin_dir }}/kubectl config use-context default \
+        --kubeconfig=/etc/kubernetes/kubelet.kubeconfig"
+
+- name: Register variable DNS_SVC_IP
+  shell: echo {{ SERVICE_CIDR }}|cut -d/ -f1|awk -F. '{print $1"."$2"."$3"."$4+2}'
+  register: DNS_SVC_IP
+  tags: upgrade_k8s, restart_node
+
+- name: Setting variable CLUSTER_DNS_SVC_IP
+  set_fact: CLUSTER_DNS_SVC_IP={{ DNS_SVC_IP.stdout }}
+  tags: upgrade_k8s, restart_node
+
+
+- name: Distribution default cni configuration files
+  template: src=cni-default.conf.j2 dest=/etc/cni/net.d/10-default.conf
+
+- name: Create kubelet configuration files
+  template: src=kubelet-config.yaml.j2 dest=/var/lib/kubelet/config.yaml
+  tags: upgrade_k8s, restart_node
+
+- name: Setting systemd file for kubelet
+  template: src=kubelet.service.j2 dest=/etc/systemd/system/kubelet.service
+  tags: upgrade_k8s, restart_node
+
+- name: Start kubelete service on boot
+  shell: systemctl enable kubelet
+  ignore_errors: true
+
+- name: Reload systemd and start kubelet
+  shell: systemctl daemon-reload && systemctl restart kubelet
+  tags: upgrade_k8s, restart_node
+
+- name: Waiting for kubelet start-up to complete
+  uri:
+    url: http://{{ inventory_hostname }}:10248/healthz
+  register: kubernetes_kubelet
+  until: kubernetes_kubelet.status == 200
+  retries: 30
+  delay: 2
+  ignore_errors: true
