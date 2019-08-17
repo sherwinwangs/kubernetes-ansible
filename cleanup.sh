@@ -10,5 +10,4 @@ rm -rf /var/lib/etcd /etc/kubernetes /opt/kubernetes-ansible/.cluster
 rm -rf /etc/cni /etc/docker
 
 # 生成一键安装脚本
-# for i in `ls 0{1,2,3,4,5,6}*`;do cat $i >>90_install.yml;echo -e " >> 90_install.yml;done
-#for i in `ls 0{1,2,3,4,5,6}*`;do cat $i >>90_install.yml;done
+# for i in `ls 0{1,2,3,4,5,6}*`;do cat $i >>90_install.yml;echo -e "\n" >> 90_install.yml;done
