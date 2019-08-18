@@ -17,3 +17,10 @@ images=(
 for imageName in ${images[@]} ; do
     docker pull ${MY_REGISTRY}/$imageName
 done
+
+
+#calico needed
+#calico/cni:v3.8.2
+#calico/pod2daemon-flexvol:v3.8.2
+#calico/node:v3.8.2
+#calico/kube-controllers:v3.8.2

@@ -4,6 +4,7 @@
     - /var/lib/kubelet
     - /var/lib/kube-proxy
     - /etc/cni/net.d
+    - /opt/cni/bin
     - /etc/kubernetes/yaml
 
 - name: Download necessary binary files kubelet, kubectl, cni plugins
@@ -11,6 +12,10 @@
   with_items:
     - kubelet
     - kubectl
+
+- name: Download cni plugin binary files
+  copy: src={{ base_dir }}/bin/kubernetes/{{ item }} dest=/opt/cni/bin/{{ item }} mode=0755
+  with_items:
     - bridge
     - host-local
     - loopback
@@ -25,9 +30,10 @@
     reauthorize: yes
   ignore_errors: true
 
-- name: Pull all image from configuration
+- name: Pull all necessary image from configuration
   docker_image:
     name: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/{{ item.target_group }}/{{ item.name }}:{{ item.tag }}"
     source: pull
   with_items: "{{ DOCKER_IMAGE_LIST }}"
+  when: 'item.prepull'
   ignore_errors: true

@@ -10,6 +10,7 @@
 - import_tasks: install_master.yml
   when: 'kubernetes_apiserver.status != 200'
 
+- import_tasks: set_label.yml
 
 - name: Check if secret is applied to kubernetes
   shell: "kubectl get secret -n kube-system|grep -w {{ PRIVATE_REGISTRY_SECRET_NAME }} >/dev/null 2>&1; echo $?"

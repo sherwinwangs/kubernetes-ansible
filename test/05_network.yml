@@ -1,7 +1,7 @@
-# Install network plugins, current only support flannel, default network mode is ipvs
+# Install network plugins, current support flannel,calico, default network mode is ipvs
 - hosts:
   - kube_master
   - kube_node
   roles:
-    - flannel
-
+    - { role: flannel, when: "CLUSTER_NETWORK == 'flannel'" }
+    - { role: calico, when: "CLUSTER_NETWORK == 'calico'" }

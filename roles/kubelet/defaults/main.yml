@@ -21,35 +21,3 @@ KUBE_APISERVER: "{%- if inventory_hostname in groups['kube_master'] -%} \
                          https://{{ groups['kube_master'][0] }}:6443 \
                      {%- endif -%} \
                  {%- endif -%}"
-
-DOCKER_IMAGE_LIST:
-  - name: "pause"
-    repository: "registry.aliyuncs.com"
-    group: "google_containers"
-    target_group: "google_containers"
-    tag: "3.1"
-    prepull: true
-  - name: "etcd"
-    repository: "registry.aliyuncs.com"
-    group: "google_containers"
-    target_group: "google_containers"
-    tag: "3.3.10"
-    prepull: true
-  - name: "kube-apiserver"
-    repository: "registry.aliyuncs.com"
-    group: "google_containers"
-    target_group: "google_containers"
-    tag: "v1.15.1"
-    prepull: true
-  - name: "kube-controller-manager"
-    repository: "registry.aliyuncs.com"
-    group: "google_containers"
-    target_group: "google_containers"
-    tag: "v1.15.1"
-    prepull: true
-  - name: "kube-scheduler"
-    repository: "registry.aliyuncs.com"
-    group: "google_containers"
-    target_group: "google_containers"
-    tag: "v1.15.1"
-    prepull: true

@@ -1,12 +1,12 @@
 - name: Generate flannel yaml file
-  template: src={{ item }}.j2 dest=/etc/kubernetes/yaml/{{ item }}
+  template: src={{ item }}.j2 dest=/etc/kubernetes/yaml/flannel/{{ item }}
   with_items:
     - kube-flannel-rbac.yaml
     - kube-flannel-cm.yaml
     - kube-flannel-ds.yaml
 
 - name: Apply flannel to kubernetes only run once on master node
-  shell: "{{ bin_dir }}/kubectl apply -f /etc/kubernetes/yaml/{{ item }}"
+  shell: "{{ bin_dir }}/kubectl apply -f /etc/kubernetes/yaml/flannel/{{ item }}"
   with_items:
     - kube-flannel-rbac.yaml
     - kube-flannel-cm.yaml

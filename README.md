@@ -8,7 +8,7 @@ This project is used to setup kubernetes and ci/cd toolchain automatically via a
 1. download used docker image mannually by script download/docker_image.sh
 2. download necessary dependence binary file and put it into ${base_dir}/bin dir detail file tree as download/binary_filelist.txt,current can be download from official sites or baidupan sharedfile links: https://pan.baidu.com/s/1UhGugwOeh1mp1mJBNScoQA password:3ka4
 3. change inventory/k8s.dev before you run ansible-playbook
-4. run command ansible-playbook -i inventory/k8s.dev 99_install.yml, after few min the kubernetes is finnish setup
+4. run command ansible-playbook -i inventory/k8s.dev --extra-vars "@images.json" 99_install.yml, after few min the kubernetes is finnish setup
 
 ##  todo list
 1. [ok]setup a nexus and init by groovy scripts automation. 
@@ -34,3 +34,4 @@ This project is used to setup kubernetes and ci/cd toolchain automatically via a
 21. 第一步时间如果不同步，后面生成的证书就会有问题，这个问题暂时没解决，急需要解决
 22. init ansible controller machine script
 23. 部署服务之前对服务进行检查，如果检查已经安装，那么跳过。
+24. add calico image to nexus

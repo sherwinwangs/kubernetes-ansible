@@ -1,12 +1,12 @@
 - name: Gerenerate kube-proxy yaml file
-  template: src={{ item }}.j2 dest=/etc/kubernetes/yaml/{{ item }}
+  template: src={{ item }}.j2 dest=/etc/kubernetes/yaml/kube_proxy/{{ item }}
   with_items:
     - kube-proxy-cm.yaml
     - kube-proxy-ds.yaml
   tags: restart_kube_proxy, upgrade_kube_proxy
 
 - name: Apply kube-proxy to kubernetes
-  shell: "{{ bin_dir }}/kubectl apply -f /etc/kubernetes/yaml/{{ item }} >/dev/null 2>&1; echo $?"
+  shell: "{{ bin_dir }}/kubectl apply -f /etc/kubernetes/yaml/kube_proxy/{{ item }} >/dev/null 2>&1; echo $?"
   with_items:
     - kube-proxy-cm.yaml
     - kube-proxy-ds.yaml

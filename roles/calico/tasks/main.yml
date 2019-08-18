@@ -1,0 +1,26 @@
+- name: Generate calico yaml file
+  template: src={{ item }}.j2 dest=/etc/kubernetes/yaml/calico/{{ item }}
+  with_items:
+    - calico.yaml
+
+- name: Apply calico to kubernetes only run once on master node
+  shell: "{{ bin_dir }}/kubectl apply -f /etc/kubernetes/yaml/calico/{{ item }}"
+  with_items:
+    - calico.yaml
+  retries: 30
+  delay: 2
+  run_once: true
+  ignore_errors: true
+  when: 'inventory_hostname in groups["kube_master"]'
+
+- name: Delete default cni configuration file
+  file: path=/etc/cni/net.d/10-default.conf state=absent
+
+- name: Waiting for calico start-up to complete
+  shell: "{{ bin_dir }}/kubectl get pod -n kube-system -o wide|grep 'calico'|grep ' {{ inventory_hostname }} '|awk '{print $3}'"
+  register: pod_status
+  until: pod_status.stdout == "Running"
+  retries: 30
+  delay: 2
+  ignore_errors: true
+  when: 'inventory_hostname == groups.kube_master.0'
