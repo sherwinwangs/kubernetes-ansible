@@ -1,3 +1,8 @@
+- name: Create directory for flannel
+  file: name={{ item }} state=directory
+  with_items:
+    - /etc/kubernetes/yaml/flannel
+
 - name: Generate flannel yaml file
   template: src={{ item }}.j2 dest=/etc/kubernetes/yaml/flannel/{{ item }}
   with_items:

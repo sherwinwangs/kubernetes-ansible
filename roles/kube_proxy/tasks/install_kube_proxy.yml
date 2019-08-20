@@ -1,3 +1,8 @@
+- name: Create directory for kube-proxy
+  file: name={{ item }} state=directory
+  with_items:
+    - /etc/kubernetes/yaml/kube_proxy
+
 - name: Gerenerate kube-proxy yaml file
   template: src={{ item }}.j2 dest=/etc/kubernetes/yaml/kube_proxy/{{ item }}
   with_items:

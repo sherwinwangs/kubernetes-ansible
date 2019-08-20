@@ -1,3 +1,8 @@
+- name: Create directory for calico
+  file: name={{ item }} state=directory
+  with_items:
+    - /etc/kubernetes/yaml/calico
+
 - name: Generate calico yaml file
   template: src={{ item }}.j2 dest=/etc/kubernetes/yaml/calico/{{ item }}
   with_items:
