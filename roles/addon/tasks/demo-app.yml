@@ -11,7 +11,7 @@
     - demoapp/demo-ingress.yaml
   run_once: true
 
-- name: Waiting for demoapp start-up to complete it possible take up to two miniutes or long depends on your network and disk performance
+- name: Waiting for demoapp start-up to complete it possible take up to two miniutes or more depends on your network and disk performance
   shell: "{{ bin_dir }}/kubectl get pod |grep 'myapp'"
   register: pod_status
   until: '"Running" in pod_status.stdout'

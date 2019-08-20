@@ -30,7 +30,7 @@
   tags: docker_registry
 
 
-- name: Waiting for demoapp start-up to complete it possible take up to two miniutes or long depends on your network and disk performance
+- name: Waiting for ingress-nginx start-up to complete it possible take up to two miniutes or more depends on your network and disk performance
   shell: "{{ bin_dir }}/kubectl get pod -n ingress-nginx|grep 'nginx-ingress-controller'"
   register: pod_status
   until: '"Running" in pod_status.stdout'
