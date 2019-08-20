@@ -87,6 +87,38 @@
       "target_group": "google_containers",
       "tag": "1.5",
       "prepull": false
+    },
+    {
+      "name": "cni",
+      "repository": "nvwtccbz.mirror.aliyuncs.com",
+      "group": "calico",
+      "target_group": "calico",
+      "tag": "v3.8.2",
+      "prepull": false
+    },
+    {
+      "name": "node",
+      "repository": "nvwtccbz.mirror.aliyuncs.com",
+      "group": "calico",
+      "target_group": "calico",
+      "tag": "v3.8.2",
+      "prepull": false
+    },
+    {
+      "name": "kube-controllers",
+      "repository": "nvwtccbz.mirror.aliyuncs.com",
+      "group": "calico",
+      "target_group": "calico",
+      "tag": "v3.8.2",
+      "prepull": false
+    },
+    {
+      "name": "pod2daemon-flexvol",
+      "repository": "nvwtccbz.mirror.aliyuncs.com",
+      "group": "calico",
+      "target_group": "calico",
+      "tag": "v3.8.2",
+      "prepull": false
     }
   ]
 }
