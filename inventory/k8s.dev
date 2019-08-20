@@ -50,7 +50,7 @@ NETWORK_INTERFACE="eth0"
 # -------- Additional Variables (don't change the default value right now)---
 # Binaries Directory
 bin_dir="/usr/bin"
-
+cni_bin_dir="/opt/cni/bin"
 # CA and other components cert/key Directory
 ca_dir="/etc/kubernetes/pki"
 
