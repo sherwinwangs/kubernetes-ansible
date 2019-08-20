@@ -1,11 +1,9 @@
 # the node used as deploy node
 [admin]
-192.168.2.10 NODE_NAME=admin
+192.168.2.11 NODE_NAME=admin
 
 [etcd]
 192.168.2.11 NODE_NAME=etcd1
-192.168.2.12 NODE_NAME=etcd2
-192.168.2.13 NODE_NAME=etcd3
 
 # master node(s)
 [kube_master]
@@ -13,13 +11,11 @@
 
 # work node(s)
 [kube_node]
-192.168.2.12 NODE_NAME=master12
-192.168.2.13 NODE_NAME=master13
 
 # [optional] nexus server, a private docker registry and maven repo
 # 'NEW_INSTALL': 'yes' to install a nexus server; 'no' to integrate with existed one
 [nexus]
-192.168.2.200 NEXUS_DOMAIN=nexus.domain.com NEW_INSTALL=no
+192.168.2.11 NEXUS_DOMAIN=nexus.domain.com NEW_INSTALL=no
 
 # [optional] ntp server for the cluster
 [chrony]

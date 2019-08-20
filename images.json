@@ -1,12 +1,13 @@
 {
-  "DOCKER_IMAGE_LIST": [{
-    "name": "pause",
-    "repository": "registry.aliyuncs.com",
-    "group": "google_containers",
-    "target_group": "google_containers",
-    "tag": "3.1",
-    "prepull": true
-  },
+  "DOCKER_IMAGE_LIST": [
+    {
+      "name": "pause",
+      "repository": "registry.aliyuncs.com",
+      "group": "google_containers",
+      "target_group": "google_containers",
+      "tag": "3.1",
+      "prepull": true
+    },
     {
       "name": "etcd",
       "repository": "registry.aliyuncs.com",
@@ -85,7 +86,7 @@
       "group": "googlecontainer",
       "target_group": "google_containers",
       "tag": "1.5",
-      "prepull": true
+      "prepull": false
     }
   ]
 }
