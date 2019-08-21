@@ -1,8 +1,15 @@
-bin/
+/opt/kubernetes-ansible/bin/
+├── binary_filelist.txt
 ├── cfssl
 │   ├── cfssl
 │   ├── cfssl-certinfo
 │   └── cfssljson
+├── cni
+│   ├── bridge
+│   ├── flannel
+│   ├── host-local
+│   ├── loopback
+│   └── portmap
 ├── docker
 │   ├── containerd
 │   ├── containerd-shim
@@ -15,12 +22,5 @@ bin/
 ├── etcd
 │   └── etcdctl
 └── kubernetes
-    ├── bandwidth
-    ├── bridge
-    ├── flannel
-    ├── host-local
     ├── kubectl
-    ├── kubelet
-    ├── loopback
-    ├── mounter
-    └── portmap
+    └── kubelet

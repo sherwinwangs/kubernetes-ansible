@@ -14,7 +14,7 @@
     - kubectl
 
 - name: Download cni plugin binary files
-  copy: src={{ base_dir }}/bin/kubernetes/{{ item }} dest={{ cni_bin_dir }}/{{ item }} mode=0755
+  copy: src={{ base_dir }}/bin/cni/{{ item }} dest={{ cni_bin_dir }}/{{ item }} mode=0755
   with_items:
     - bridge
     - host-local

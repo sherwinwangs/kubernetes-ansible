@@ -37,4 +37,5 @@ bin/cfssl/
 bin/docker/
 bin/etcd/
 bin/kubernetes/
+bin/cni/
 .cluster/

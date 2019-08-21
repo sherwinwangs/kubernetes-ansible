@@ -82,7 +82,7 @@
     },
     {
       "name": "defaultbackend-amd64",
-      "repository": "registry-1.docker.io",
+      "repository": "nvwtccbz.mirror.aliyuncs.com",
       "group": "googlecontainer",
       "target_group": "google_containers",
       "tag": "1.5",
