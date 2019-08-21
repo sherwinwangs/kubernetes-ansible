@@ -21,10 +21,6 @@
 - name: Delete default cni configuration file
   file: path=/etc/cni/net.d/10-default.conf state=absent
 
-- name: Reload systemd and start kubelet
-  shell: systemctl daemon-reload && systemctl restart kubelet
-  tags: upgrade_k8s, restart_node
-
 - name: Waiting for calico start-up to complete
   shell: "{{ bin_dir }}/kubectl get pod -n kube-system -o wide|grep 'calico'|grep ' {{ inventory_hostname }} '|awk '{print $3}'"
   register: pod_status
