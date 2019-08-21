@@ -568,6 +568,12 @@ spec:
               name: cni-bin-dir
             - mountPath: /host/etc/cni/net.d
               name: cni-net-dir
+        - name: remove-default-cni
+          image: {{ calico_cni_image }}
+          command: ["rm","-f","/host/etc/cni/net.d/10-default.conf"]
+          volumeMounts:
+            - mountPath: /host/etc/cni/net.d
+              name: cni-net-dir
         # Adds a Flex Volume Driver that creates a per-pod Unix Domain Socket to allow Dikastes
         # to communicate with Felix over the Policy Sync API.
         - name: flexvol-driver
