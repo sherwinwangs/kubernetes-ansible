@@ -1,4 +1,4 @@
-etcd_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/etcd:3.3.10"
+etcd_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/etcd:{{ IMAGE_ETCD_VERSION }}"
 
 # Generate the IP and port of communication between etcd clusters, and automatically generate them according to the members of etcd group
 TMP_NODES: "{% for h in groups['etcd'] %}{{ hostvars[h]['NODE_NAME'] }}=https://{{ h }}:2380,{% endfor %}"

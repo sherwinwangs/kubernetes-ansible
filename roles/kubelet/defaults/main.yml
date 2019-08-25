@@ -1,5 +1,4 @@
-kube_proxy_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/kube-proxy:v1.15.1"
-pause_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/pause:3.1"
+pause_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/pause:{{ IMAGE_PAUSE_VERSION}}"
 
 # Kubelet root dir
 KUBELET_ROOT_DIR: "/var/lib/kubelet"

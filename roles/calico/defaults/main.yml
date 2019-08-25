@@ -1,4 +1,4 @@
-calico_cni_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/calico/cni:v3.8.2"
-calico_node_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/calico/node:v3.8.2"
-calico_kube_controller_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/calico/kube-controllers:v3.8.2"
-calico_pod2daemon_flexvol_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/calico/pod2daemon-flexvol:v3.8.2"
+calico_cni_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/calico/cni:{{ IMAGE_CALICO_VERSION }}"
+calico_node_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/calico/node:{{ IMAGE_CALICO_VERSION }}"
+calico_kube_controller_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/calico/kube-controllers:{{ IMAGE_CALICO_VERSION }}"
+calico_pod2daemon_flexvol_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/calico/pod2daemon-flexvol:{{ IMAGE_CALICO_VERSION }}"

@@ -1,0 +1,15 @@
+- name: Login private registry and force re-authorization
+  docker_login:
+    registry: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}"
+    username: "admin"
+    password: "{{ NEXUS_ADMIN_PASSWORD }}"
+    reauthorize: yes
+  ignore_errors: true
+
+- name: Pull all necessary image from configuration
+  docker_image:
+    name: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/{{ item.target_group }}/{{ item.name }}:{{ item.tag }}"
+    source: pull
+  with_items: "{{ DOCKER_IMAGE_LIST }}"
+  when: 'item.prepull'
+  ignore_errors: true

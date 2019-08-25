@@ -1,4 +1,4 @@
-kube_proxy_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/kube-proxy:v1.15.1"
+kube_proxy_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google_containers/kube-proxy:{{ IMAGE_KUBERNETES_VERSION }}"
 
 # kube-proxy's iptables mode, ipvs or iptables(default value)
 

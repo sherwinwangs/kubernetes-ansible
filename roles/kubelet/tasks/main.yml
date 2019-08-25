@@ -7,7 +7,10 @@
   delay: 1
   ignore_errors: true
 
-- import_tasks: prepare.yml
+- import_tasks: distribute.yml
   when: 'kubernetes_kubelet.status != 200'
+
+- import_tasks: pre_pull_images.yml
+
 - import_tasks: install_kubelet.yml
   when: 'kubernetes_kubelet.status != 200'

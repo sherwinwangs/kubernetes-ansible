@@ -25,9 +25,14 @@
       - python-netaddr      # 用于处理ip地址，生成DNS等svc的IP
       - python-pip          # 用于通过pip install docker-py模块
     state: present
+  retries: 30
+  delay: 2
+
 
 - name: Install python module from via pip module
   pip:
     name:
       - docker-py
     state: present
+  retries: 30
+  delay: 2
