@@ -3,7 +3,7 @@ kube_proxy_image: "{{ groups.nexus[0] }}:{{ NEXUS_DOCKER_REGISTRY_PORT }}/google
 # kube-proxy's iptables mode, ipvs or iptables(default value)
 
 
-PROXY_MODE: '{%- if CLUSTER_NETWORK == "flannel" -%} \
+PROXY_MODE: '{%- if CLUSTER_NETWORK == "flannel" -%}
                 "ipvs"
             {%- else -%}
                 "iptables"

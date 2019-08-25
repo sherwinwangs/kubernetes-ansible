@@ -1,0 +1,37 @@
+- name: Create directory for binary and certificate files
+  file: name={{ item }} state=directory
+  with_items:
+    - "{{ bin_dir }}"
+    - "{{ ca_dir }}/etcd"
+    - /root/.kube
+    - /etc/kubernetes/manifests
+  when: "inventory_hostname in groups['kube_master'] or inventory_hostname in groups['kube_node']"
+
+- name: Distribution cfssl tools
+  copy: src={{ base_dir }}/bin/cfssl/{{ item }} dest={{ bin_dir }}/{{ item }} mode=0755
+  with_items:
+    - cfssl
+    - cfssljson
+  when: "inventory_hostname in groups['kube_master'] or inventory_hostname in groups['kube_node']"
+
+- name: Distribution certificate files
+  copy: src={{ base_dir }}/.cluster/ssl/{{ item }} dest={{ ca_dir }}/{{ item }}
+  with_items:
+    - ca.pem
+    - ca-key.pem
+    - ca-config.json
+    - admin.pem
+    - admin-key.pem
+    - kube-proxy.pem
+    - kube-proxy-key.pem
+    - etcd/etcd-server.pem
+    - etcd/etcd-server-key.pem
+    - etcd/etcd-client.pem
+    - etcd/etcd-client-key.pem
+    - etcd/etcd-peer.pem
+    - etcd/etcd-peer-key.pem
+  when: "inventory_hostname in groups['kube_master'] or inventory_hostname in groups['kube_node'] or inventory_hostname in groups['etcd']"
+
+- name: Distribution kubeconfig file
+  copy: src="/root/.kube/config" dest="/root/.kube/config" owner="root" group="root" mode="0600"
+  when: "inventory_hostname in groups['kube_master']"
