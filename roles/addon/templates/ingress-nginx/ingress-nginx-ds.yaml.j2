@@ -24,7 +24,6 @@ spec:
     spec:
       imagePullSecrets:
       - name: registrysecret
-      hostNetwork: true
       serviceAccountName: nginx-ingress-serviceaccount
       containers:
         - name: nginx-ingress-controller
