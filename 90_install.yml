@@ -60,6 +60,7 @@
 - hosts:
   - kube_node
   roles:
+  - { role: docker, when: "inventory_hostname not in groups['etcd']"} 
   - { role: kubelet, when: "inventory_hostname not in groups['etcd']" }
 
 
