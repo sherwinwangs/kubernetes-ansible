@@ -9,9 +9,9 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-body-size: 50m
     nginx.ingress.kubernetes.io/client-max-body-size: 50m
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^/kibana/(.*)$ /$1 break;
-      rewrite ^/grafana/(.*)$ /$1 break;
+    #nginx.ingress.kubernetes.io/configuration-snippet: |
+    #  rewrite ^/kibana/(.*)$ /$1 break;
+    #  rewrite ^/grafana/(.*)$ /$1 break;
     #nginx.ingress.kubernetes.io/rewrite-target: /
     #nginx.ingress.kubernetes.io/add-base-url: "true"
 spec:
@@ -20,6 +20,6 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: myapp
+              serviceName: project-demo
               servicePort: 80
             path: /
